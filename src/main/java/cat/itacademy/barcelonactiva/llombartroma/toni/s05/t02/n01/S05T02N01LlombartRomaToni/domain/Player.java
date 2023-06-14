@@ -13,37 +13,33 @@ import java.util.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "players")
+@Data
+@NoArgsConstructor
 public class Player {
-
-    public static final String DEFAULT_NAME = "ANONYMOUS";
-    @Id
-    @Getter
-    @Setter
-    private String id;
-
-    @Column
-    @Getter
-    @Setter
-    private String name;
-
-    @Column
-    @Getter
-    @Setter
-    private String dateOfRegistration;
-
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Game> games;
-
-    public Player() {
+    {
         this.games = new ArrayList<>();
         this.dateOfRegistration = Date.from(Instant.now()).toString();
     }
-    public Player(String name) {
+
+    public static final String DEFAULT_NAME = "ANONYMOUS";
+    @Id
+    private String id;
+    @Column
+    private String name;
+    @Column
+    private String dateOfRegistration;
+    @Column
+    private String email;
+    @Column
+    private String password;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Game> games;
+
+    public Player(String name, String email, String password) {
         this.name=name;
-        this.games = new ArrayList<>();
-        this.dateOfRegistration = Date.from(Instant.now()).toString();
+        this.email=email;
+        this.password=password;
     }
     public static PlayerDTO fromPlayerToPlayerDTO(Player player) {
         ModelMapper modelMapper = new ModelMapper();
