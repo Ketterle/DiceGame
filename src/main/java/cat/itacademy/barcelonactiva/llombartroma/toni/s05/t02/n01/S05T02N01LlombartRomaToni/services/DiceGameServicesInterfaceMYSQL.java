@@ -5,8 +5,8 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Player;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repository.GameRepositoryMySQL;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repository.PlayerRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.GameRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.PlayerRepositoryMySQL;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -64,7 +64,7 @@ public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
         try {
             Optional<Player> player = playerRepositoryMySQL.findById(id);
             if(player.isPresent()) {
-                List<GameDTO> games = gameRepositoryMySQL.findAllByPlayerId(id).stream().map(s->Game.fromGameToGameDTO(s)).collect(Collectors.toList());
+                List<GameDTO> games = gameRepositoryMySQL.findAllByPlayerId(id).stream().map(Game::fromGameToGameDTO).collect(Collectors.toList());
                 return Optional.of(games);
             }
             else {
@@ -97,12 +97,11 @@ public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
     }
 
     public Optional<List<PlayerDTO>> playersRanking() {
-        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).collect(Collectors.toList());
-        Collections.sort(playersDTO);
+        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).sorted().collect(Collectors.toList());
         return Optional.of(playersDTO);
     }
     public OptionalDouble averageSuccess() {
-        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(s->Player.fromPlayerToPlayerDTO(s)).collect(Collectors.toList());
+        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).toList();
         return playersDTO.stream().mapToDouble(PlayerDTO::getSuccessRate).average();
     }
     public Optional<PlayerDTO> bestPlayer() {
