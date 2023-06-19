@@ -15,7 +15,7 @@ import org.modelmapper.ModelMapper;
 @Table(name = "games")
 @Data
 @NoArgsConstructor
-public class Game {
+public final class Game {
     {
         this.dice1 = diceThrown();
         this.dice2 = diceThrown();

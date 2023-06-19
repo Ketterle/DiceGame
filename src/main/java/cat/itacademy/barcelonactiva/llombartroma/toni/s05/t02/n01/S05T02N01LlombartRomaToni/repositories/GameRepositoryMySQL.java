@@ -11,6 +11,6 @@ public interface GameRepositoryMySQL extends JpaRepository<Game,String> {
     @Transactional
     List<Game> findAllByPlayer(Player player);
     @Transactional
-   List<Game> findAllByPlayerId(String id);
+    List<Game> findAllByPlayerId(String id);
 
 }

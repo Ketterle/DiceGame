@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface PlayerRepositoryMySQL extends JpaRepository<Player,String> {
     Optional<List<Player>> getPlayersByName(String name);
     Optional<Player> findById(String id);
+    Optional<Player> findByEmail(String email);
     void deleteById(String id);
 }
