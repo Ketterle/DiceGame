@@ -1,11 +1,11 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Player;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.GameRepositoryMySQL;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.PlayerRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class DiceGameServicesInterfaceMYSQLTest {
 
     @Mock
-    private PlayerRepositoryMySQL playerRepository;
+    private UserRepositoryMySQL playerRepository;
 
     @Mock
     private GameRepositoryMySQL gameRepository;
@@ -40,16 +40,16 @@ class DiceGameServicesInterfaceMYSQLTest {
 
     @Test
     void testAddPlayer() {
-        // Initialize the Player object
-        Player player = new Player();
-        player.setName("John");
+        // Initialize the User object
+        User user = new User();
+        user.setName("John");
 
         // Set up the mock behavior
         when(playerRepository.getPlayersByName("John")).thenReturn(Optional.of(new ArrayList<>()));
-        when(playerRepository.save(player)).thenReturn(player);
+        when(playerRepository.save(user)).thenReturn(user);
 
         // Call the method under test
-        Optional<PlayerDTO> result = diceGameServices.add(player);
+        Optional<UserDTO> result = diceGameServices.add(user);
 
         // Verify the result
         assertThat(result).isPresent();
@@ -57,22 +57,22 @@ class DiceGameServicesInterfaceMYSQLTest {
 
         // Verify the mock interaction
         verify(playerRepository).getPlayersByName("John");
-        verify(playerRepository).save(player);
+        verify(playerRepository).save(user);
     }
 
     @Test
     void testUpdatePlayer() {
-        // Initialize the Player object
-        Player player = new Player();
-        player.setId("1"); // Assuming the player ID is 1
-        player.setName("Toni");
+        // Initialize the User object
+        User user = new User();
+        user.setId("1"); // Assuming the user ID is 1
+        user.setName("Toni");
 
         // Set up the mock behavior
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
-        when(playerRepository.save(player)).thenReturn(player);
+        when(playerRepository.findById("1")).thenReturn(Optional.of(user));
+        when(playerRepository.save(user)).thenReturn(user);
 
         // Call the method under test
-        Optional<PlayerDTO> result = diceGameServices.update("John","1");
+        Optional<UserDTO> result = diceGameServices.update("John","1");
 
         // Verify the result
         assertThat(result).isPresent();
@@ -80,24 +80,24 @@ class DiceGameServicesInterfaceMYSQLTest {
 
         // Verify the mock interaction
         verify(playerRepository).findById("1");
-        verify(playerRepository).save(player);
+        verify(playerRepository).save(user);
     }
     @Test
     void testNewGame() {
-        // Initialize the Player object
-        Player player = new Player();
-        player.setId("1"); // Assuming the player ID is 1
-        player.setName("John");
+        // Initialize the User object
+        User user = new User();
+        user.setId("1"); // Assuming the user ID is 1
+        user.setName("John");
 
         // Set up the mock behavior
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
+        when(playerRepository.findById("1")).thenReturn(Optional.of(user));
 
         // Call the method under test
         Optional<Game> result = diceGameServices.newGame("1");
 
         // Verify the result
         assertThat(result).isPresent();
-        assertThat(result.get().getPlayer()).isEqualTo(player);
+        assertThat(result.get().getUser()).isEqualTo(user);
 
         // Verify the mock interaction
         verify(playerRepository).findById("1");
@@ -105,24 +105,24 @@ class DiceGameServicesInterfaceMYSQLTest {
     }
     @Test
     void testGetPlayerGames() {
-        // Initialize the Player object
-        Player player = new Player();
-        player.setId("1"); // Assuming the player ID is 1
-        player.setName("John");
+        // Initialize the User object
+        User user = new User();
+        user.setId("1"); // Assuming the user ID is 1
+        user.setName("John");
 
         // Initialize the Game objects
         Game game1 = new Game();
         game1.setId(1);
-        game1.setPlayer(player);
+        game1.setUser(user);
 
         Game game2 = new Game();
         game2.setId(2);
-        game2.setPlayer(player);
+        game2.setUser(user);
 
         List<Game> games = Arrays.asList(game1, game2);
 
         // Set up the mock behavior
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
+        when(playerRepository.findById("1")).thenReturn(Optional.of(user));
         when(gameRepository.findAllByPlayerId("1")).thenReturn(games);
 
         // Call the method under test
@@ -138,23 +138,23 @@ class DiceGameServicesInterfaceMYSQLTest {
     }
     @Test
     void testGetAllPlayers() {
-        // Create a list of Player objects
-        List<Player> players = new ArrayList<>();
-        Player player1 = new Player();
-        player1.setId("1");
-        player1.setName("John");
-        players.add(player1);
+        // Create a list of User objects
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("John");
+        users.add(user1);
 
-        Player player2 = new Player();
-        player2.setId("2");
-        player2.setName("Jane");
-        players.add(player2);
+        User user2 = new User();
+        user2.setId("2");
+        user2.setName("Jane");
+        users.add(user2);
 
         // Set up the mock behavior
-        when(playerRepository.findAll()).thenReturn(players);
+        when(playerRepository.findAll()).thenReturn(users);
 
         // Call the method under test
-        List<PlayerDTO> result = diceGameServices.getAllPlayers().get();
+        List<UserDTO> result = diceGameServices.getAllPlayers().get();
 
         // Verify the result
         assertThat(result).hasSize(2);
@@ -166,16 +166,16 @@ class DiceGameServicesInterfaceMYSQLTest {
     }
     @Test
     void testDeletePlayer() {
-        // Create a player object
-        Player player = new Player();
-        player.setId("1");
-        player.setName("John");
+        // Create a user object
+        User user = new User();
+        user.setId("1");
+        user.setName("John");
 
         // Set up the mock behavior
-        when(playerRepository.findById(anyString())).thenReturn(Optional.of(player));
+        when(playerRepository.findById(anyString())).thenReturn(Optional.of(user));
 
         // Call the method under test
-        Optional<PlayerDTO> result = diceGameServices.delete("1");
+        Optional<UserDTO> result = diceGameServices.delete("1");
 
         // Verify the result
         assertTrue(result.isPresent());
@@ -188,21 +188,21 @@ class DiceGameServicesInterfaceMYSQLTest {
     @Test
     void testPlayersRanking() {
         // Create a list of player objects
-        List<Player> players = new ArrayList<>();
-        Player player1 = new Player();
-        player1.setId("1");
-        player1.setName("John");
-        players.add(player1);
-        Player player2 = new Player();
-        player2.setId("1");
-        player2.setName("Alice");
-        players.add(player2);
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("John");
+        users.add(user1);
+        User user2 = new User();
+        user2.setId("1");
+        user2.setName("Alice");
+        users.add(user2);
 
         // Set up the mock behavior
-        when(playerRepository.findAll()).thenReturn(players);
+        when(playerRepository.findAll()).thenReturn(users);
 
         // Call the method under test
-        Optional<List<PlayerDTO>> result = diceGameServices.playersRanking();
+        Optional<List<UserDTO>> result = diceGameServices.playersRanking();
         result.get().stream().
                 map(s-> {
                     if(s.getName().equals("John")) {
@@ -218,7 +218,7 @@ class DiceGameServicesInterfaceMYSQLTest {
 
         // Verify the result
         assertTrue(result.isPresent());
-        List<PlayerDTO> rankedPlayers = result.get();
+        List<UserDTO> rankedPlayers = result.get();
         assertEquals(2, rankedPlayers.size());
         assertEquals("Alice", rankedPlayers.get(0).getName());
         assertEquals(1.0, rankedPlayers.get(0).getSuccessRate());
@@ -232,18 +232,18 @@ class DiceGameServicesInterfaceMYSQLTest {
     @Test
     void testAverageSuccess() {
         // Create a list of player objects
-        List<Player> players = new ArrayList<>();
-        Player player1 = new Player();
-        player1.setId("1");
-        player1.setName("John");
-        players.add(player1);
-        Player player2 = new Player();
-        player2.setId("2");
-        player2.setName("Alice");
-        players.add(player2);
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("John");
+        users.add(user1);
+        User user2 = new User();
+        user2.setId("2");
+        user2.setName("Alice");
+        users.add(user2);
 
         // Set up the mock behavior
-        when(playerRepository.findAll()).thenReturn(players);
+        when(playerRepository.findAll()).thenReturn(users);
 
         // Call the method under test
         OptionalDouble result = diceGameServices.getAllPlayers().get().stream()
@@ -267,26 +267,26 @@ class DiceGameServicesInterfaceMYSQLTest {
     @Test
     void testBestPlayer() {
         // Create a list of player objects
-        List<Player> players = new ArrayList<>();
-        Player player1 = new Player();
-        player1.setId("1");
-        player1.setName("John");
-        players.add(player1);
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("John");
+        users.add(user1);
 
-        Player player2 = new Player();
-        player2.setId("2");
-        player2.setName("Alice");
-        players.add(player2);
+        User user2 = new User();
+        user2.setId("2");
+        user2.setName("Alice");
+        users.add(user2);
 
         // Set up the mock behavior
-        when(playerRepository.findAll()).thenReturn(players);
+        when(playerRepository.findAll()).thenReturn(users);
 
         // Call the method under test
-        Optional<PlayerDTO> result = diceGameServices.bestPlayer();
+        Optional<UserDTO> result = diceGameServices.bestPlayer();
 
         // Verify the result
         assertTrue(result.isPresent());
-        PlayerDTO bestPlayer = result.get();
+        UserDTO bestPlayer = result.get();
         assertEquals("Alice", bestPlayer.getName());
 
         // Verify the mock interaction
@@ -295,26 +295,26 @@ class DiceGameServicesInterfaceMYSQLTest {
     @Test
     void testWorstPlayer() {
         // Create a list of player objects
-        List<Player> players = new ArrayList<>();
-        Player player1 = new Player();
-        player1.setId("1");
-        player1.setName("John");
-        players.add(player1);
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("John");
+        users.add(user1);
 
-        Player player2 = new Player();
-        player2.setId("2");
-        player2.setName("Alice");
-        players.add(player2);
+        User user2 = new User();
+        user2.setId("2");
+        user2.setName("Alice");
+        users.add(user2);
 
         // Set up the mock behavior
-        when(playerRepository.findAll()).thenReturn(players);
+        when(playerRepository.findAll()).thenReturn(users);
 
         // Call the method under test
-        Optional<PlayerDTO> result = diceGameServices.worstPlayer();
+        Optional<UserDTO> result = diceGameServices.worstPlayer();
 
         // Verify the result
         assertTrue(result.isPresent());
-        PlayerDTO worstPlayer = result.get();
+        UserDTO worstPlayer = result.get();
         assertEquals("John", worstPlayer.getName());
 
         // Verify the mock interaction

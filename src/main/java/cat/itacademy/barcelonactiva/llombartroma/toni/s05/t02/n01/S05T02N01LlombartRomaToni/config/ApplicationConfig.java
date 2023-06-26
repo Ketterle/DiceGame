@@ -1,7 +1,7 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.config;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.PlayerRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final PlayerRepositoryMySQL playerRepositoryMySQL;
+    private final UserRepositoryMySQL userRepositoryMySQL;
 
     @Bean
     public UserDetailsService userDetailsService () {
         return username -> {
             try {
-                return playerRepositoryMySQL.findByEmail(username).orElseThrow(PlayerNotFoundException::new);
+                return userRepositoryMySQL.findByEmail(username).orElseThrow(PlayerNotFoundException::new);
             } catch (PlayerNotFoundException e) {
                 throw new RuntimeException(e);
             }

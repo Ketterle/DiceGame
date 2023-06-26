@@ -4,9 +4,7 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.modelmapper.ModelMapper;
@@ -45,7 +43,7 @@ public final class Game {
     @JoinColumn(name = "id_player", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Player player;
+    private User user;
 
     private static int diceThrown() {
         return (int) (Math.random() * MAX_DICE_VALUE) + 1;

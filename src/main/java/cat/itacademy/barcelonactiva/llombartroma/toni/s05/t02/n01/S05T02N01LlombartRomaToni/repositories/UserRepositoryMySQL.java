@@ -1,16 +1,13 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories;
 
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
+import java.util.Optional;
 
-public interface GameRepositoryMySQL extends JpaRepository<Game,String> {
-
-
-    @Transactional
-    List<Game> findAllByUserId(int id);
-
+public interface UserRepositoryMySQL extends JpaRepository<User,String> {
+    Optional<List<User>> getUsersByName(String name);
+    Optional<User> findById(int id);
+    Optional<User> findByEmail(String email);
+    void deleteById(int id);
 }

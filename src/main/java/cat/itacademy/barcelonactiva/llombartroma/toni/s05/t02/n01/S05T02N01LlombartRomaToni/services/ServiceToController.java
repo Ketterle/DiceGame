@@ -2,9 +2,9 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Player;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,20 +14,16 @@ import java.util.OptionalDouble;
 @Service
 public class ServiceToController implements ServicesInterface {
     private final DiceGameServicesInterfaceMYSQL diceGameServicesMYSQL;
-    private final DiceGameServicesInterfaceMongoDB diceGameServicesMongoDB;
 
-    public ServiceToController(DiceGameServicesInterfaceMYSQL diceGameServicesMYSQL, DiceGameServicesInterfaceMongoDB diceGameServicesMongoDB) {
+    public ServiceToController(DiceGameServicesInterfaceMYSQL diceGameServicesMYSQL) {
         this.diceGameServicesMYSQL = diceGameServicesMYSQL;
-        this.diceGameServicesMongoDB = diceGameServicesMongoDB;
     }
-    public Optional<PlayerDTO> add(Player player) {
-        diceGameServicesMYSQL.add(player);
-        return diceGameServicesMongoDB.add(player);
+    public Optional<UserDTO> add(User user) {
+        return diceGameServicesMYSQL.add(user);
     }
-    public Optional<PlayerDTO> update(String name, String id) {
+    public Optional<UserDTO> update(String name, int id) {
         try {
-            Optional<PlayerDTO> playerToBeUpdated = diceGameServicesMYSQL.update(name, id);
-            diceGameServicesMongoDB.update(name,id);
+            Optional<UserDTO> playerToBeUpdated = diceGameServicesMYSQL.update(name, id);
             if(playerToBeUpdated.isEmpty()) {
                 throw new PlayerNotFoundException();
             }
@@ -38,23 +34,21 @@ public class ServiceToController implements ServicesInterface {
             return Optional.empty();
         }
     }
-    public Optional<Game> newGame(String id) {
-        diceGameServicesMongoDB.newGame(id);
+    public Optional<Game> newGame(int id) {
         return diceGameServicesMYSQL.newGame(id);
     }
-    public Optional<List<GameDTO>> getPlayerGames(String id) {
+    public Optional<List<GameDTO>> getPlayerGames(int id) {
         return diceGameServicesMYSQL.getPlayerGames(id);
     }
-    public Optional<List<PlayerDTO>> getAllPlayers() {
+    public Optional<List<UserDTO>> getAllPlayers() {
         return diceGameServicesMYSQL.getAllPlayers();
     }
 
-    public Optional<PlayerDTO> delete(String id) {
-        diceGameServicesMongoDB.delete(id);
+    public Optional<UserDTO> delete (int id) {
         return diceGameServicesMYSQL.delete(id);
     }
 
-    public Optional<List<PlayerDTO>> playersRanking() {
+    public Optional<List<UserDTO>> playersRanking() {
         return diceGameServicesMYSQL.playersRanking();
     }
 
@@ -62,10 +56,10 @@ public class ServiceToController implements ServicesInterface {
         return diceGameServicesMYSQL.averageSuccess();
     }
 
-    public Optional<PlayerDTO> bestPlayer() {
+    public Optional<UserDTO> bestPlayer() {
         return diceGameServicesMYSQL.bestPlayer();
     }
-    public Optional<PlayerDTO> worstPlayer() {
+    public Optional<UserDTO> worstPlayer() {
         return diceGameServicesMYSQL.worstPlayer();
     }
 

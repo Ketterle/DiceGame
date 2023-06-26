@@ -1,7 +1,6 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain;
 
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.PlayerRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -16,20 +15,17 @@ import java.util.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Entity
-@Table(name = "players")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public final class Player implements UserDetails {
-    {
-        this.games = new ArrayList<>();
-        this.dateOfRegistration = Date.from(Instant.now()).toString();
-    }
+public final class User implements UserDetails {
 
     public static final String DEFAULT_NAME = "ANONYMOUS";
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @Column
     private String name;
     @Column
@@ -42,19 +38,21 @@ public final class Player implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> games;
 
-    public Player(String name, String email, String password) {
+    public User(String name, String email, String password) {
         this.name=name;
         this.email=email;
         this.password=password;
+        this.games = new ArrayList<>();
+        this.dateOfRegistration = Date.from(Instant.now()).toString();
     }
-    public static PlayerDTO fromPlayerToPlayerDTO(Player player) {
+    public static UserDTO fromUserToUserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
-        PlayerDTO playerDTO = modelMapper.map(player, PlayerDTO.class);
-        playerDTO.setSuccessRate(playerDTO.successRatePlayerCalculator());
-        return playerDTO;
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        userDTO.setSuccessRate(userDTO.successRatePlayerCalculator());
+        return userDTO;
     }
 
     @Override
@@ -63,7 +61,7 @@ public final class Player implements UserDetails {
     }
     @Override
     public String getPassword() {
-        return email;
+        return password;
     }
 
     @Override

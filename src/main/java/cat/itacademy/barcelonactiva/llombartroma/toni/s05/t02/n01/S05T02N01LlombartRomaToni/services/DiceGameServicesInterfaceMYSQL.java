@@ -2,11 +2,11 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Player;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.GameRepositoryMySQL;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.PlayerRepositoryMySQL;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,39 +15,38 @@ import java.util.stream.Collectors;
 @Service
 public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
 
-    private final PlayerRepositoryMySQL playerRepositoryMySQL;
+    private final UserRepositoryMySQL userRepositoryMySQL;
     private final GameRepositoryMySQL gameRepositoryMySQL;
 
-    public DiceGameServicesInterfaceMYSQL(PlayerRepositoryMySQL playerRepositoryMySQL, GameRepositoryMySQL gameRepositoryMySQL) {
-        this.playerRepositoryMySQL = playerRepositoryMySQL;
+    public DiceGameServicesInterfaceMYSQL(UserRepositoryMySQL userRepositoryMySQL, GameRepositoryMySQL gameRepositoryMySQL) {
+        this.userRepositoryMySQL = userRepositoryMySQL;
         this.gameRepositoryMySQL = gameRepositoryMySQL;
 
     }
 
-    /* Implements how API add a new Player */
-    public Optional<PlayerDTO> add(Player player) {
-        Optional<List<Player>> playerRetrievedOptional = playerRepositoryMySQL.getPlayersByName(player.getName());
-        if (!playerRetrievedOptional.get().isEmpty() && playerRetrievedOptional.get().stream().noneMatch(s->s.getName().equals((Player.DEFAULT_NAME)))) {
+    /* Implements how API add a new User */
+    public Optional<UserDTO> add(User user) {
+        Optional<List<User>> playerRetrievedOptional = userRepositoryMySQL.getUsersByName(user.getName());
+        if (!playerRetrievedOptional.get().isEmpty() && playerRetrievedOptional.get().stream().noneMatch(s->s.getName().equals((User.DEFAULT_NAME)))) {
             return Optional.empty();
         } else {
-            player.setId(idGeneratorMySQL(playerRepositoryMySQL));
-            return Optional.of(Player.fromPlayerToPlayerDTO(playerRepositoryMySQL.save(player)));
+            return Optional.of(User.fromUserToUserDTO(userRepositoryMySQL.save(user)));
         }
     }
 
-    public Optional<PlayerDTO> update(String name, String id) {
-        Optional<Player> optionalPlayer = playerRepositoryMySQL.findById(id);
-        Player updatePlayer = optionalPlayer.get();
-        updatePlayer.setName(name);
-        return Optional.of(Player.fromPlayerToPlayerDTO(playerRepositoryMySQL.save(updatePlayer)));
+    public Optional<UserDTO> update(String name, int id) {
+        Optional<User> optionalPlayer = userRepositoryMySQL.findById(id);
+        User updateUser = optionalPlayer.get();
+        updateUser.setName(name);
+        return Optional.of(User.fromUserToUserDTO(userRepositoryMySQL.save(updateUser)));
     }
-    public Optional<Game> newGame(String id) {
+    public Optional<Game> newGame(int id) {
         try {
-            Optional<Player> player = playerRepositoryMySQL.findById(id);
-            if(player.isPresent()) {
+            Optional<User> user = userRepositoryMySQL.findById(id);
+            if(user.isPresent()) {
                 Game game = new Game();
-                game.setPlayer(player.get());
-                player.get().getGames().add(game);
+                game.setUser(user.get());
+                user.get().getGames().add(game);
                 gameRepositoryMySQL.save(game);
                 return Optional.of(game);
             }
@@ -60,11 +59,11 @@ public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
             return Optional.empty();
         }
     }
-    public Optional<List<GameDTO>> getPlayerGames(String id) {
+    public Optional<List<GameDTO>> getPlayerGames(int id) {
         try {
-            Optional<Player> player = playerRepositoryMySQL.findById(id);
+            Optional<User> player = userRepositoryMySQL.findById(id);
             if(player.isPresent()) {
-                List<GameDTO> games = gameRepositoryMySQL.findAllByPlayerId(id).stream().map(Game::fromGameToGameDTO).collect(Collectors.toList());
+                List<GameDTO> games = gameRepositoryMySQL.findAllByUserId(id).stream().map(Game::fromGameToGameDTO).collect(Collectors.toList());
                 return Optional.of(games);
             }
             else {
@@ -76,16 +75,16 @@ public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
             return Optional.empty();
         }
     }
-    public Optional<List<PlayerDTO>> getAllPlayers() {
-        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).collect(Collectors.toList());
+    public Optional<List<UserDTO>> getAllPlayers() {
+        List<UserDTO> playersDTO = userRepositoryMySQL.findAll().stream().map(User::fromUserToUserDTO).collect(Collectors.toList());
         return Optional.of(playersDTO);
     }
-    public Optional<PlayerDTO> delete(String id) {
-        Optional<Player> optionalPlayer = playerRepositoryMySQL.findById(id);
+    public Optional<UserDTO> delete(int id) {
+        Optional<User> optionalPlayer = userRepositoryMySQL.findById(id);
         try {
             if (optionalPlayer.isPresent()) {
-                optionalPlayer.ifPresent(player -> playerRepositoryMySQL.deleteById(player.getId()));
-                return Optional.of(Player.fromPlayerToPlayerDTO(optionalPlayer.get()));
+                optionalPlayer.ifPresent(player -> userRepositoryMySQL.deleteById(player.getId()));
+                return Optional.of(User.fromUserToUserDTO(optionalPlayer.get()));
             } else {
                 throw new PlayerNotFoundException();
             }
@@ -96,24 +95,20 @@ public class DiceGameServicesInterfaceMYSQL implements ServicesInterface {
         }
     }
 
-    public Optional<List<PlayerDTO>> playersRanking() {
-        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).sorted().collect(Collectors.toList());
+    public Optional<List<UserDTO>> playersRanking() {
+        List<UserDTO> playersDTO = userRepositoryMySQL.findAll().stream().map(User::fromUserToUserDTO).sorted().collect(Collectors.toList());
         return Optional.of(playersDTO);
     }
     public OptionalDouble averageSuccess() {
-        List<PlayerDTO> playersDTO = playerRepositoryMySQL.findAll().stream().map(Player::fromPlayerToPlayerDTO).toList();
-        return playersDTO.stream().mapToDouble(PlayerDTO::getSuccessRate).average();
+        List<UserDTO> playersDTO = userRepositoryMySQL.findAll().stream().map(User::fromUserToUserDTO).toList();
+        return playersDTO.stream().mapToDouble(UserDTO::getSuccessRate).average();
     }
-    public Optional<PlayerDTO> bestPlayer() {
+    public Optional<UserDTO> bestPlayer() {
         return getAllPlayers().get().stream().sorted().findFirst();
 
     }
-    public Optional<PlayerDTO> worstPlayer() {
+    public Optional<UserDTO> worstPlayer() {
         return getAllPlayers().get().stream().max(Comparator.naturalOrder());
     }
-    public static String idGeneratorMySQL(PlayerRepositoryMySQL playerRepositoryMySQL) {
-        Optional<Player> playerMaxId = playerRepositoryMySQL.findAll().stream()
-                .max(Comparator.comparing(s -> Integer.parseInt(s.getId())));
-        return playerMaxId.map(player -> String.valueOf(Integer.parseInt(player.getId()) + 1)).orElse("0");
-    }
+
 }

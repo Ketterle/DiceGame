@@ -1,17 +1,14 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto;
 
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.GameStatus;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class PlayerDTO implements Comparable{
+public class UserDTO implements Comparable{
 
     @Getter
     @Setter
@@ -23,7 +20,7 @@ public class PlayerDTO implements Comparable{
     @Setter
     private double successRate;
 
-    public PlayerDTO() {
+    public UserDTO() {
         games = new ArrayList<>();
     }
     public double successRatePlayerCalculator() {
@@ -40,8 +37,8 @@ public class PlayerDTO implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        PlayerDTO playerDTOToBeCompared = (PlayerDTO)o;
-        double comparingValue = this.getSuccessRate()-playerDTOToBeCompared.getSuccessRate();
+        UserDTO userDTOToBeCompared = (UserDTO)o;
+        double comparingValue = this.getSuccessRate()- userDTOToBeCompared.getSuccessRate();
         if(comparingValue>0) {
             return -1;
         }
@@ -49,7 +46,7 @@ public class PlayerDTO implements Comparable{
             return 1;
         }
         else {
-            return this.getName().compareTo(playerDTOToBeCompared.getName());
+            return this.getName().compareTo(userDTOToBeCompared.getName());
 
         }
     }

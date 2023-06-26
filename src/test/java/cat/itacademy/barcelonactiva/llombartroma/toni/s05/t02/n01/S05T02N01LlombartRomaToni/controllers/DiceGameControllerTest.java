@@ -1,8 +1,8 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers;
 
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Player;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services.ServiceToController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,41 +34,41 @@ public class DiceGameControllerTest {
     @Test
     void testAddPlayer() {
         // Prepare test data
-        Player player = new Player();
-        player.setName("John");
+        User user = new User();
+        user.setName("John");
 
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setName("John");
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName("John");
 
-        when(serviceToController.add(player)).thenReturn(Optional.of(playerDTO));
+        when(serviceToController.add(user)).thenReturn(Optional.of(userDTO));
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.add(player);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.add(user);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isEqualTo(playerDTO);
+        assertThat(responseEntity.getBody()).isEqualTo(userDTO);
 
         // Verify the mock interaction
-        verify(serviceToController).add(player);
+        verify(serviceToController).add(user);
     }
 
     @Test
     void testAddPlayer_NoContent() {
         // Prepare test data
-        Player player = new Player();
-        player.setName("John");
+        User user = new User();
+        user.setName("John");
 
-        when(serviceToController.add(player)).thenReturn(Optional.empty());
+        when(serviceToController.add(user)).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.add(player);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.add(user);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         // Verify the mock interaction
-        verify(serviceToController).add(player);
+        verify(serviceToController).add(user);
     }
 
     @Test
@@ -77,17 +77,17 @@ public class DiceGameControllerTest {
         String playerName = "John";
         String playerId = "1";
 
-        PlayerDTO updatedPlayerDTO = new PlayerDTO();
-        updatedPlayerDTO.setName(playerName);
+        UserDTO updatedUserDTO = new UserDTO();
+        updatedUserDTO.setName(playerName);
 
-        when(serviceToController.update(playerName, playerId)).thenReturn(Optional.of(updatedPlayerDTO));
+        when(serviceToController.update(playerName, playerId)).thenReturn(Optional.of(updatedUserDTO));
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.updatePlayer(playerName, playerId);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.updatePlayer(playerName, playerId);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(updatedPlayerDTO);
+        assertThat(responseEntity.getBody()).isEqualTo(updatedUserDTO);
 
         // Verify the mock interaction
         verify(serviceToController).update(playerName, playerId);
@@ -102,7 +102,7 @@ public class DiceGameControllerTest {
         when(serviceToController.update(playerName, playerId)).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.updatePlayer(playerName, playerId);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.updatePlayer(playerName, playerId);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -154,10 +154,10 @@ public class DiceGameControllerTest {
     @Test
     void testGetAllPlayers() {
         // Prepare test data
-        List<PlayerDTO> players = new ArrayList<>();
-        PlayerDTO player1 = new PlayerDTO();
+        List<UserDTO> players = new ArrayList<>();
+        UserDTO player1 = new UserDTO();
         player1.setName("John");
-        PlayerDTO player2 = new PlayerDTO();
+        UserDTO player2 = new UserDTO();
         player2.setName("Anna");
         players.add(player1);
         players.add(player2);
@@ -165,7 +165,7 @@ public class DiceGameControllerTest {
         when(serviceToController.getAllPlayers()).thenReturn(Optional.of(players));
 
         // Call the endpoint
-        ResponseEntity<List<PlayerDTO>> responseEntity = diceGameController.getAllPlayers();
+        ResponseEntity<List<UserDTO>> responseEntity = diceGameController.getAllPlayers();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -180,7 +180,7 @@ public class DiceGameControllerTest {
         when(serviceToController.getAllPlayers()).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<List<PlayerDTO>> responseEntity = diceGameController.getAllPlayers();
+        ResponseEntity<List<UserDTO>> responseEntity = diceGameController.getAllPlayers();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -195,13 +195,13 @@ public class DiceGameControllerTest {
         // Prepare test data
         String playerId = "1";
 
-        PlayerDTO player = new PlayerDTO();
+        UserDTO player = new UserDTO();
         player.setName("John");
 
         when(serviceToController.delete(playerId)).thenReturn(Optional.of(player));
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.delete(playerId);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.delete(playerId);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -219,7 +219,7 @@ public class DiceGameControllerTest {
         when(serviceToController.delete(playerId)).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.delete(playerId);
+        ResponseEntity<UserDTO> responseEntity = diceGameController.delete(playerId);
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -231,10 +231,10 @@ public class DiceGameControllerTest {
     @Test
     void testGetPlayersRanking() {
         // Prepare test data
-        List<PlayerDTO> players = new ArrayList<>();
-        PlayerDTO player1 = new PlayerDTO();
+        List<UserDTO> players = new ArrayList<>();
+        UserDTO player1 = new UserDTO();
         player1.setName("John");
-        PlayerDTO player2 = new PlayerDTO();
+        UserDTO player2 = new UserDTO();
         player1.setName("Jane");
         players.add(player1);
         players.add(player2);
@@ -242,7 +242,7 @@ public class DiceGameControllerTest {
         when(serviceToController.playersRanking()).thenReturn(Optional.of(players));
 
         // Call the endpoint
-        ResponseEntity<List<PlayerDTO>> responseEntity = diceGameController.getPlayersRanking();
+        ResponseEntity<List<UserDTO>> responseEntity = diceGameController.getPlayersRanking();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -257,7 +257,7 @@ public class DiceGameControllerTest {
         when(serviceToController.playersRanking()).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<List<PlayerDTO>> responseEntity = diceGameController.getPlayersRanking();
+        ResponseEntity<List<UserDTO>> responseEntity = diceGameController.getPlayersRanking();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -301,13 +301,13 @@ public class DiceGameControllerTest {
     @Test
     void testGetBestPlayer() {
         // Prepare test data
-        PlayerDTO bestPlayer = new PlayerDTO();
+        UserDTO bestPlayer = new UserDTO();
         bestPlayer.setName("John");
 
         when(serviceToController.bestPlayer()).thenReturn(Optional.of(bestPlayer));
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.getBestPlayer();
+        ResponseEntity<UserDTO> responseEntity = diceGameController.getBestPlayer();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -322,7 +322,7 @@ public class DiceGameControllerTest {
         when(serviceToController.bestPlayer()).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.getBestPlayer();
+        ResponseEntity<UserDTO> responseEntity = diceGameController.getBestPlayer();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -334,13 +334,13 @@ public class DiceGameControllerTest {
     @Test
     void testGetWorstPlayer() {
         // Prepare test data
-        PlayerDTO worstPlayer = new PlayerDTO();
+        UserDTO worstPlayer = new UserDTO();
         worstPlayer.setName("John");
 
         when(serviceToController.worstPlayer()).thenReturn(Optional.of(worstPlayer));
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.getWorstPlayer();
+        ResponseEntity<UserDTO> responseEntity = diceGameController.getWorstPlayer();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -355,7 +355,7 @@ public class DiceGameControllerTest {
         when(serviceToController.worstPlayer()).thenReturn(Optional.empty());
 
         // Call the endpoint
-        ResponseEntity<PlayerDTO> responseEntity = diceGameController.getWorstPlayer();
+        ResponseEntity<UserDTO> responseEntity = diceGameController.getWorstPlayer();
 
         // Verify the response
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
