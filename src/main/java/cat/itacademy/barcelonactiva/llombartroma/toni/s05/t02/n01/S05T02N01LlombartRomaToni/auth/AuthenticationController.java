@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/dicegame/player/auth")
 public class AuthenticationController {
 
     private final AuthenticationService service;
@@ -18,13 +17,18 @@ public class AuthenticationController {
         this.service = service;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register (@RequestBody RegisterRequest request) {
+    @PostMapping(EndpointConstantsAuthenticate.ADD_PLAYER)
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register (@RequestBody AuthenticationRequest request) throws PlayerNotFoundException {
+    @PostMapping(EndpointConstantsAuthenticate.AUTHENTICATE_PLAYER)
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest request) throws PlayerNotFoundException {
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    public static class EndpointConstantsAuthenticate {
+        public static final String ADD_PLAYER = "/dicegame/player/auth/register";
+        public static final String AUTHENTICATE_PLAYER = "/dicegame/player/auth/authenticate";
     }
 }

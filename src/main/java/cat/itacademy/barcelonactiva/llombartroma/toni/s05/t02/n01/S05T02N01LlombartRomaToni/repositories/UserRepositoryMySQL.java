@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepositoryMySQL extends JpaRepository<User,String> {
+public interface UserRepositoryMySQL extends JpaRepository<User, Integer> {
     Optional<List<User>> getUsersByName(String name);
     Optional<User> findById(int id);
     Optional<User> findByEmail(String email);

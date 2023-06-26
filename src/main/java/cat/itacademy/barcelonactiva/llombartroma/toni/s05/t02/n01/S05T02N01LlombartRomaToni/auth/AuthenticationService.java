@@ -28,27 +28,38 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         try {
-            Optional<List<User>> playerRetrievedOptional = userRepositoryMySQL.getUsersByName(request.getName());
-            if (!playerRetrievedOptional.get().isEmpty() && playerRetrievedOptional.get().stream().noneMatch(s -> s.getName().equals((User.DEFAULT_NAME)))) {
+            Optional<List<User>> userRetrievedOptional = userRepositoryMySQL.getUsersByName(request.getName());
+            if (!userRetrievedOptional.get().isEmpty() && userRetrievedOptional.get().stream().noneMatch(s -> s.getName().equals((User.DEFAULT_NAME))) || (request.getRole().equals(Role.ADMIN) && !userRepositoryMongo.findAll().isEmpty())) {
                 throw new PlayerAlreadyExistsException();
-            } else {
-                var player = User.builder()
-                        .name(request.getName())
+            } else if(request.getRole().equals(Role.ADMIN)) {
+                var admin = User.builder()
+                        .name("ADMIN")
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
+                        .dateOfRegistration(java.time.LocalDateTime.now().toString())
                         .build();
-                if(userRepositoryMongo.findAll().isEmpty() && player.getRole().equals(Role.ADMIN)) {
-                    userRepositoryMongo.save(player);
-                }
-                else {
-                    userRepositoryMySQL.save(player);
-                }
-                var jwtToken = jwtService.generateToken(player);
+                    userRepositoryMongo.save(admin);
+                var jwtToken = jwtService.generateToken(admin);
                 return AuthenticationResponse.builder()
                         .token(jwtToken)
                         .build();
             }
+            else {
+                var player = User.builder()
+                        .name(request.getName()==null?User.DEFAULT_NAME:request.getName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .dateOfRegistration(java.time.LocalDateTime.now().toString())
+                        .build();
+                userRepositoryMySQL.save(player);
+                var jwtToken = jwtService.generateToken(player);
+                return AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .build();
+                }
+
         }
         catch( Exception e) {
             e.printStackTrace();
@@ -58,10 +69,18 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws PlayerNotFoundException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var player = userRepositoryMySQL.findByEmail(request.getEmail()).orElseThrow(()-> new PlayerNotFoundException());
-        var jwtToken = jwtService.generateToken(player);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        if (request.getRole().equals(Role.PLAYER)) {
+            var player = userRepositoryMySQL.findByEmail(request.getEmail()).orElseThrow(() -> new PlayerNotFoundException());
+            var jwtToken = jwtService.generateToken(player);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } else {
+            var admin = userRepositoryMongo.findByEmail(request.getEmail()).orElseThrow(() -> new PlayerNotFoundException());
+            var jwtToken = jwtService.generateToken(admin);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        }
     }
 }

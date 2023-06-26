@@ -1,6 +1,8 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.config;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMongo;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,17 +15,25 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
     private final UserRepositoryMySQL userRepositoryMySQL;
+    private final UserRepositoryMongo userRepositoryMongo;
+
 
     @Bean
     public UserDetailsService userDetailsService () {
         return username -> {
             try {
-                return userRepositoryMySQL.findByEmail(username).orElseThrow(PlayerNotFoundException::new);
+                Optional<User> player = userRepositoryMySQL.findByEmail(username);
+                if(player.isEmpty()) {
+                    return userRepositoryMongo.findByEmail(username).orElseThrow(PlayerNotFoundException::new);
+                }
+                return player.orElseThrow(PlayerNotFoundException::new);
             } catch (PlayerNotFoundException e) {
                 throw new RuntimeException(e);
             }

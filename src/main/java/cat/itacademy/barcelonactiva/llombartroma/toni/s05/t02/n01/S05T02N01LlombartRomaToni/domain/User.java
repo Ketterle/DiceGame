@@ -1,6 +1,6 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain;
 
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -8,19 +8,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.util.*;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Entity
-@Table(name = "users")
+@Table(name = "players")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public final class User implements UserDetails {
+public class User implements UserDetails {
 
     public static final String DEFAULT_NAME = "ANONYMOUS";
     @Id
@@ -38,21 +36,10 @@ public final class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Game> games;
-
     public User(String name, String email, String password) {
         this.name=name;
         this.email=email;
         this.password=password;
-        this.games = new ArrayList<>();
-        this.dateOfRegistration = Date.from(Instant.now()).toString();
-    }
-    public static UserDTO fromUserToUserDTO(User user) {
-        ModelMapper modelMapper = new ModelMapper();
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        userDTO.setSuccessRate(userDTO.successRatePlayerCalculator());
-        return userDTO;
     }
 
     @Override

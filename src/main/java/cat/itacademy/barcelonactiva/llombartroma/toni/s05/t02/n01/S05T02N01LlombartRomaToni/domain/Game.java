@@ -43,7 +43,7 @@ public final class Game {
     @JoinColumn(name = "id_player", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private User user;
+    private User player;
 
     private static int diceThrown() {
         return (int) (Math.random() * MAX_DICE_VALUE) + 1;

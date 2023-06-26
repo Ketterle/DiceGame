@@ -2,9 +2,8 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.UserDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,26 +12,23 @@ import java.util.OptionalDouble;
 
 @Service
 public class ServiceToController implements ServicesInterface {
-    private final DiceGameServicesInterfaceMYSQL diceGameServicesMYSQL;
+    private final DiceGameServicesMYSQL diceGameServicesMYSQL;
 
-    public ServiceToController(DiceGameServicesInterfaceMYSQL diceGameServicesMYSQL) {
+    public ServiceToController(DiceGameServicesMYSQL diceGameServicesMYSQL) {
         this.diceGameServicesMYSQL = diceGameServicesMYSQL;
     }
-    public Optional<UserDTO> add(User user) {
-        return diceGameServicesMYSQL.add(user);
-    }
-    public Optional<UserDTO> update(String name, int id) {
+    public Optional<PlayerDTO> update(String name, int id) {
+        Optional<PlayerDTO> userDTOOptional;
         try {
-            Optional<UserDTO> playerToBeUpdated = diceGameServicesMYSQL.update(name, id);
-            if(playerToBeUpdated.isEmpty()) {
-                throw new PlayerNotFoundException();
+            if((userDTOOptional=diceGameServicesMYSQL.update(name, id)).isEmpty()) {
+                    throw new PlayerNotFoundException();
             }
-            return playerToBeUpdated;
         }
         catch (PlayerNotFoundException e) {
             e.printStackTrace();
             return Optional.empty();
         }
+        return userDTOOptional;
     }
     public Optional<Game> newGame(int id) {
         return diceGameServicesMYSQL.newGame(id);
@@ -40,15 +36,15 @@ public class ServiceToController implements ServicesInterface {
     public Optional<List<GameDTO>> getPlayerGames(int id) {
         return diceGameServicesMYSQL.getPlayerGames(id);
     }
-    public Optional<List<UserDTO>> getAllPlayers() {
+    public Optional<List<PlayerDTO>> getAllPlayers() {
         return diceGameServicesMYSQL.getAllPlayers();
     }
 
-    public Optional<UserDTO> delete (int id) {
+    public Optional<PlayerDTO> delete (int id) {
         return diceGameServicesMYSQL.delete(id);
     }
 
-    public Optional<List<UserDTO>> playersRanking() {
+    public Optional<List<PlayerDTO>> playersRanking() {
         return diceGameServicesMYSQL.playersRanking();
     }
 
@@ -56,10 +52,10 @@ public class ServiceToController implements ServicesInterface {
         return diceGameServicesMYSQL.averageSuccess();
     }
 
-    public Optional<UserDTO> bestPlayer() {
+    public Optional<PlayerDTO> bestPlayer() {
         return diceGameServicesMYSQL.bestPlayer();
     }
-    public Optional<UserDTO> worstPlayer() {
+    public Optional<PlayerDTO> worstPlayer() {
         return diceGameServicesMYSQL.worstPlayer();
     }
 

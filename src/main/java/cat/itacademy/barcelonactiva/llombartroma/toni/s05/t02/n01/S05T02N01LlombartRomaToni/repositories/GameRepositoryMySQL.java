@@ -6,11 +6,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface GameRepositoryMySQL extends JpaRepository<Game,String> {
-
+public interface GameRepositoryMySQL extends JpaRepository<Game,Integer> {
+    @Transactional
+    List<Game> findAllByPlayerId(int id);
 
     @Transactional
-    List<Game> findAllByUserId(int id);
+    Optional<List<Game>> findGamesByPlayer(User player);
 
 }

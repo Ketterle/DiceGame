@@ -7,9 +7,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepositoryMongo extends MongoRepository<User,String> {
-    Optional <User> findById(String id);
+public interface UserRepositoryMongo extends MongoRepository<User,Integer> {
+    Optional <User> findById(int id);
+    Optional<User> findByEmail(String email);
+
     List<User> findAll();
-    void deleteUserById(int id);
+
 
 }
