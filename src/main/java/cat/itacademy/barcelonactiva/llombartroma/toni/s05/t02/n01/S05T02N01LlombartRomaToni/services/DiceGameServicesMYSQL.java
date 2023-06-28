@@ -2,9 +2,11 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.GameStatus;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.GameRepositoryMySQL;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
 import org.modelmapper.ModelMapper;
@@ -26,14 +28,25 @@ public class DiceGameServicesMYSQL implements ServicesInterface {
     }
 
     public Optional<PlayerDTO> update(String name, int id) {
-        Optional<User> optionalPlayer = userRepositoryMySQL.findById(id);
-        User updateUser = optionalPlayer.get();
-        updateUser.setName(name);
-        return Optional.of(fromUserToPlayerDTO(userRepositoryMySQL.save(updateUser)));
+        try {
+            Optional<User> optionalPlayer = userRepositoryMySQL.findById(id);
+            if(optionalPlayer.isPresent()) {
+                User updateUser = optionalPlayer.get();
+                updateUser.setName(name);
+                return Optional.of(fromUserToPlayerDTO(userRepositoryMySQL.save(updateUser)));
+            }
+            else {
+                throw new PlayerNotFoundException();
+            }
+        }
+        catch (PlayerNotFoundException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
     public Optional<Game> newGame(int id) {
         try {
-            Optional<User> user = Optional.of(userRepositoryMySQL.findById(id).get());
+            Optional<User> user = userRepositoryMySQL.findById(id);
             if(user.isPresent()) {
                 Game game = new Game();
                 game.setPlayer(user.get());
@@ -65,17 +78,14 @@ public class DiceGameServicesMYSQL implements ServicesInterface {
             return Optional.empty();
         }
     }
-    public Optional<List<PlayerDTO>> getAllPlayers() {
-            List<PlayerDTO> playersDTO = new ArrayList<>();
+    public Optional<List<PlayerRankingDTO>> getAllPlayers() {
+            List<PlayerRankingDTO> playersRankingDTO = new ArrayList<>();
             List<User> players = userRepositoryMySQL.findAll();
             for(User player:players) {
-                List<Game> games = gameRepositoryMySQL.findGamesByPlayer(player).get();
-                PlayerDTO playerDTO = fromUserToPlayerDTO(player);
-                playerDTO.setGames(games);
-                playerDTO.setSuccessRate(playerDTO.successRatePlayerCalculator());
-                playersDTO.add(playerDTO);
+                PlayerRankingDTO playerRankingDTO = fromUserToPlayerRankingDTO(player);
+                playersRankingDTO.add(playerRankingDTO);
             }
-        return Optional.of(playersDTO);
+        return Optional.of(playersRankingDTO);
     }
     public Optional<PlayerDTO> delete(int id) {
         Optional<User> optionalPlayer = userRepositoryMySQL.findById(id);
@@ -93,19 +103,19 @@ public class DiceGameServicesMYSQL implements ServicesInterface {
         }
     }
 
-    public Optional<List<PlayerDTO>> playersRanking() {
-        List<PlayerDTO> playersDTO = userRepositoryMySQL.findAll().stream().map(this::fromUserToPlayerDTO).sorted().collect(Collectors.toList());
-        return Optional.of(playersDTO);
+    public Optional<List<PlayerRankingDTO>> playersRanking() {
+        List<PlayerRankingDTO> playersRankingDTO = userRepositoryMySQL.findAll().stream().map(this::fromUserToPlayerRankingDTO).sorted().collect(Collectors.toList());
+        return Optional.of(playersRankingDTO);
     }
     public OptionalDouble averageSuccess() {
-        List<PlayerDTO> playersDTO = userRepositoryMySQL.findAll().stream().map(this::fromUserToPlayerDTO).toList();
-        return playersDTO.stream().mapToDouble(PlayerDTO::getSuccessRate).average();
+        List<PlayerRankingDTO> playersRankingDTO = userRepositoryMySQL.findAll().stream().map(this::fromUserToPlayerRankingDTO).toList();
+        return playersRankingDTO.stream().mapToDouble(PlayerRankingDTO::getSuccessRate).average();
     }
-    public Optional<PlayerDTO> bestPlayer() {
+    public Optional<PlayerRankingDTO> bestPlayer() {
         return getAllPlayers().get().stream().sorted().findFirst();
 
     }
-    public Optional<PlayerDTO> worstPlayer() {
+    public Optional<PlayerRankingDTO> worstPlayer() {
         return getAllPlayers().get().stream().max(Comparator.naturalOrder());
     }
 
@@ -119,5 +129,18 @@ public class DiceGameServicesMYSQL implements ServicesInterface {
         return playerDTO;
     }
 
-
+    private PlayerRankingDTO fromUserToPlayerRankingDTO(User player) {
+        ModelMapper modelMapper = new ModelMapper();
+        PlayerRankingDTO playerRankingDTO = modelMapper.map(player, PlayerRankingDTO.class);
+        List<Game> games = gameRepositoryMySQL.findGamesByPlayer(player).get();
+        double averageScore=0;
+        for(Game game: games) {
+            if(game.getGameStatus().equals(GameStatus.WIN)) {
+                averageScore++;
+            }
+        }
+        averageScore=averageScore/games.size();
+        playerRankingDTO.setSuccessRate(averageScore);
+        return playerRankingDTO;
+    }
 }

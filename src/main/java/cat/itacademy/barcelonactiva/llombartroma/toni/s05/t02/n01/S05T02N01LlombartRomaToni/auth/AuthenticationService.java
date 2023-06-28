@@ -28,8 +28,8 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         try {
-            Optional<List<User>> userRetrievedOptional = userRepositoryMySQL.getUsersByName(request.getName());
-            if (!userRetrievedOptional.get().isEmpty() && userRetrievedOptional.get().stream().noneMatch(s -> s.getName().equals((User.DEFAULT_NAME))) || (request.getRole().equals(Role.ADMIN) && !userRepositoryMongo.findAll().isEmpty())) {
+            Optional<List<User>> userRetrievedOptionalName = userRepositoryMySQL.getUsersByName(request.getName());
+            if (!userRetrievedOptionalName.get().isEmpty() && userRetrievedOptionalName.get().stream().noneMatch(s -> s.getName().equals((User.DEFAULT_NAME))) || (request.getRole().equals(Role.ADMIN) && !userRepositoryMongo.findAll().isEmpty())) {
                 throw new PlayerAlreadyExistsException();
             } else if(request.getRole().equals(Role.ADMIN)) {
                 var admin = User.builder()
@@ -70,13 +70,13 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws PlayerNotFoundException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         if (request.getRole().equals(Role.PLAYER)) {
-            var player = userRepositoryMySQL.findByEmail(request.getEmail()).orElseThrow(() -> new PlayerNotFoundException());
+            var player = userRepositoryMySQL.findByEmail(request.getEmail()).orElseThrow(PlayerNotFoundException::new);
             var jwtToken = jwtService.generateToken(player);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
         } else {
-            var admin = userRepositoryMongo.findByEmail(request.getEmail()).orElseThrow(() -> new PlayerNotFoundException());
+            var admin = userRepositoryMongo.findByEmail(request.getEmail()).orElseThrow(PlayerNotFoundException::new);
             var jwtToken = jwtService.generateToken(admin);
             return AuthenticationResponse.builder()
                     .token(jwtToken)

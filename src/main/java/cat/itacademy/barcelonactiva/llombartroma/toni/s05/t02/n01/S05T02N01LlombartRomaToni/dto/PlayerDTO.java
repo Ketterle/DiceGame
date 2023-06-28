@@ -6,8 +6,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +22,7 @@ public class PlayerDTO implements Comparable{
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> games;
 
     public double successRatePlayerCalculator() {

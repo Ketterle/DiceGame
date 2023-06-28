@@ -54,7 +54,6 @@ public final class Game {
     }
     public static GameDTO fromGameToGameDTO(Game game) {
         ModelMapper modelMapper = new ModelMapper();
-        GameDTO gameDTO = modelMapper.map(game, GameDTO.class);
-        return gameDTO;
+        return modelMapper.map(game, GameDTO.class);
     }
 }

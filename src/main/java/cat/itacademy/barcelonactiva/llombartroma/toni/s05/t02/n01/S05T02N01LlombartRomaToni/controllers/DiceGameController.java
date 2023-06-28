@@ -3,6 +3,7 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services.ServiceToController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +48,9 @@ public class DiceGameController {
     }
 
     @GetMapping(EndpointConstantsOperation.GET_ALL_PLAYERS)
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
-        Optional<List<PlayerDTO>> optionalPlayers = serviceToController.getAllPlayers();
-        return optionalPlayers.map(playerDTOS -> new ResponseEntity<>(playerDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    public ResponseEntity<List<PlayerRankingDTO>> getAllPlayers() {
+        Optional<List<PlayerRankingDTO>> optionalPlayers = serviceToController.getAllPlayers();
+        return optionalPlayers.map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @DeleteMapping(EndpointConstantsOperation.DELETE_PLAYER)
@@ -59,9 +60,9 @@ public class DiceGameController {
     }
 
     @GetMapping(EndpointConstantsOperation.GET_PLAYERS_RANKING)
-    public ResponseEntity<List<PlayerDTO>> getPlayersRanking() {
-        Optional<List<PlayerDTO>> optionalPlayers = serviceToController.playersRanking();
-        return optionalPlayers.map(playerDTOS -> new ResponseEntity<>(playerDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    public ResponseEntity<List<PlayerRankingDTO>> getPlayersRanking() {
+        Optional<List<PlayerRankingDTO>> optionalPlayers = serviceToController.playersRanking();
+        return optionalPlayers.map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping(EndpointConstantsOperation.GET_AVERAGE_SUCCESS)
@@ -74,18 +75,16 @@ public class DiceGameController {
             return ResponseEntity.noContent().build();
         }
     }
-
-
     @GetMapping(EndpointConstantsOperation.GET_BEST_PLAYER)
-    public ResponseEntity<PlayerDTO> getBestPlayer() {
-        Optional<PlayerDTO> optionalBestPlayer = serviceToController.bestPlayer();
-        return optionalBestPlayer.map(playerDTO -> new ResponseEntity<>(playerDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    public ResponseEntity<PlayerRankingDTO> getBestPlayer() {
+        Optional<PlayerRankingDTO> optionalBestPlayer = serviceToController.bestPlayer();
+        return optionalBestPlayer.map(playerRankingDTO -> new ResponseEntity<>(playerRankingDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping(EndpointConstantsOperation.GET_WORST_PLAYER)
-    public ResponseEntity<PlayerDTO> getWorstPlayer() {
-        Optional<PlayerDTO> optionalWorstPlayer = serviceToController.worstPlayer();
-        return optionalWorstPlayer.map(playerDTO -> new ResponseEntity<>(playerDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    public ResponseEntity<PlayerRankingDTO> getWorstPlayer() {
+        Optional<PlayerRankingDTO> optionalWorstPlayer = serviceToController.worstPlayer();
+        return optionalWorstPlayer.map(playerRankingDTO -> new ResponseEntity<>(playerRankingDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     public static class EndpointConstantsOperation {

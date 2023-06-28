@@ -4,6 +4,7 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class ServiceToController implements ServicesInterface {
     public Optional<List<GameDTO>> getPlayerGames(int id) {
         return diceGameServicesMYSQL.getPlayerGames(id);
     }
-    public Optional<List<PlayerDTO>> getAllPlayers() {
+    public Optional<List<PlayerRankingDTO>> getAllPlayers() {
         return diceGameServicesMYSQL.getAllPlayers();
     }
 
@@ -44,7 +45,7 @@ public class ServiceToController implements ServicesInterface {
         return diceGameServicesMYSQL.delete(id);
     }
 
-    public Optional<List<PlayerDTO>> playersRanking() {
+    public Optional<List<PlayerRankingDTO>> playersRanking() {
         return diceGameServicesMYSQL.playersRanking();
     }
 
@@ -52,10 +53,10 @@ public class ServiceToController implements ServicesInterface {
         return diceGameServicesMYSQL.averageSuccess();
     }
 
-    public Optional<PlayerDTO> bestPlayer() {
+    public Optional<PlayerRankingDTO> bestPlayer() {
         return diceGameServicesMYSQL.bestPlayer();
     }
-    public Optional<PlayerDTO> worstPlayer() {
+    public Optional<PlayerRankingDTO> worstPlayer() {
         return diceGameServicesMYSQL.worstPlayer();
     }
 
