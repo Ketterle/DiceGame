@@ -70,4 +70,5 @@ public class UserTest {
 
         assertEquals(true, result);
     }
+
 }

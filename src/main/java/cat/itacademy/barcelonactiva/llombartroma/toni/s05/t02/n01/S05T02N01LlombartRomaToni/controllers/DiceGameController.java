@@ -1,6 +1,8 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers;
 
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
@@ -20,6 +22,16 @@ public final class DiceGameController {
 
     public DiceGameController(ServiceToController serviceToController) {
         this.serviceToController = serviceToController;
+    }
+
+    @PostMapping(EndpointConstantsOperation.REGISTER_PLAYER)
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody User user) {
+        return ResponseEntity.ok(serviceToController.register(user));
+    }
+
+    @PostMapping(EndpointConstantsOperation.AUTHENTICATE_PLAYER)
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody User user) {
+        return ResponseEntity.ok(serviceToController.authenticate(user));
     }
 
     @PutMapping(value = EndpointConstantsOperation.UPDATE_PLAYER)
@@ -50,8 +62,8 @@ public final class DiceGameController {
 
     @GetMapping(EndpointConstantsOperation.GET_ALL_PLAYERS)
     public ResponseEntity<List<PlayerRankingDTO>> getAllPlayers() {
-        Optional<List<PlayerRankingDTO>> optionalPlayers = serviceToController.getAllPlayers();
-        return optionalPlayers.map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        List<PlayerRankingDTO> players = serviceToController.retrieveAllPlayers();
+        return Optional.of(players).map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @DeleteMapping(EndpointConstantsOperation.DELETE_PLAYER)
@@ -90,6 +102,9 @@ public final class DiceGameController {
 
     /* This inner class contains all endpoints as a constant Strings */
     public static class EndpointConstantsOperation {
+        public static final String REGISTER_PLAYER = "/dicegame/player/auth/register";
+        public static final String AUTHENTICATE_PLAYER = "/dicegame/player/auth/authenticate";
+
         public static final String UPDATE_PLAYER = "/dicegame/player/{id}/update";
         public static final String ADD_GAME = "/dicegame/player/{id}/newgame";
         public static final String GET_PLAYER_GAMES = "/dicegame/player/{id}/allgames";

@@ -2,9 +2,9 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
-
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.GameStatus;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
@@ -32,6 +32,40 @@ public class DiceGameControllerTest {
     @Before
     public void setup() {
         // Initialize mocks or stub any necessary behavior
+    }
+
+    @Test
+    public void registerTest() {
+        // Arrange
+        User user = new User(); // Create a sample user object
+        AuthenticationResponse expectedResponse = new AuthenticationResponse();
+        // Set the expected response properties based on your implementation
+
+        when(serviceToController.register(user)).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<AuthenticationResponse> response = diceGameController.register(user);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
+    }
+
+    @Test
+    public void authenticateTest() {
+        // Arrange
+        User user = new User(); // Create a sample user object
+        AuthenticationResponse expectedResponse = new AuthenticationResponse();
+        // Set the expected response properties based on your implementation
+
+        when(serviceToController.authenticate(user)).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<AuthenticationResponse> response = diceGameController.authenticate(user);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
     }
 
     @Test
@@ -101,9 +135,7 @@ public class DiceGameControllerTest {
     public void getAllPlayersTest() {
         // Mocking the service response
         List<PlayerRankingDTO> playerDTOList = new ArrayList<>();
-        // Add some player DTOs to the list
-        Optional<List<PlayerRankingDTO>> optionalPlayerDTOList = Optional.of(playerDTOList);
-        when(serviceToController.getAllPlayers()).thenReturn(optionalPlayerDTOList);
+        when(serviceToController.retrieveAllPlayers()).thenReturn(playerDTOList);
 
         // Testing the controller method
         ResponseEntity<List<PlayerRankingDTO>> response = diceGameController.getAllPlayers();
@@ -178,7 +210,7 @@ public class DiceGameControllerTest {
     }
 
     @Test
-    public void worstPlayerTest() {
+    public void worstPlayer() {
         // Mocking the service response
         PlayerRankingDTO worstPlayer = new PlayerRankingDTO();
         worstPlayer.setName("John");

@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameDTOTest {
+
     @Test
-    public void GameDTOTest() {
+    public void testGameDTO() {
         int dice1 = 3;
         int dice2 = 4;
         int gameOutput = dice1 + dice2;
@@ -24,4 +25,5 @@ public class GameDTOTest {
         assertEquals(gameOutput, gameDTO.getGameOutput());
         assertEquals(gameStatus, gameDTO.getGameStatus());
     }
+    
 }

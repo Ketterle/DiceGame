@@ -13,6 +13,6 @@ public interface GameRepositoryMySQL extends JpaRepository<Game,Integer> {
     List<Game> findAllByPlayerId(int id);
 
     @Transactional
-    Optional<List<Game>> findGamesByPlayer(User player);
+    List<Game> findGamesByPlayer(User player);
 
 }

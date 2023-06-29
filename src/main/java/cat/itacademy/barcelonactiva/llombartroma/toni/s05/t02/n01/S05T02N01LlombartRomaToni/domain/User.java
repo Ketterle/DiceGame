@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -18,8 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class User implements UserDetails {
-
     public static final String DEFAULT_NAME = "ANONYMOUS";
+    public static final String DEFAULT_ADMIN = "ADMIN";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

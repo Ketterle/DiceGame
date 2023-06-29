@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface UserRepositoryMySQL extends JpaRepository<User, Integer> {
     Optional<List<User>> getUsersByName(String name);
+
+    List<User> findAll();
     Optional<User> findById(int id);
     Optional<User> findByEmail(String email);
     void deleteById(int id);

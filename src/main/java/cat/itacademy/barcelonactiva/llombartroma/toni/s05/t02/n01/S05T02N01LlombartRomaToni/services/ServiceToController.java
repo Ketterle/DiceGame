@@ -1,7 +1,9 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
@@ -14,15 +16,34 @@ import java.util.OptionalDouble;
 /* This class acts as an extra layer between service and controller. Very useful when we have more than one service which persists in different DB */
 @Service
 public final class ServiceToController implements ServicesInterface {
-    private final DiceGameServicesMYSQL diceGameServicesMYSQL;
+    private final DiceGameServices diceGameServices;
 
-    public ServiceToController(DiceGameServicesMYSQL diceGameServicesMYSQL) {
-        this.diceGameServicesMYSQL = diceGameServicesMYSQL;
+
+
+    public ServiceToController(DiceGameServices diceGameServices) {
+        this.diceGameServices = diceGameServices;
     }
+
+    public AuthenticationResponse register (User user) {
+        try {
+            return diceGameServices.register(user);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public AuthenticationResponse authenticate (User user) {
+        try {
+           return diceGameServices.authenticate(user);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Optional<PlayerDTO> update(String name, int id) {
         Optional<PlayerDTO> userDTOOptional;
         try {
-            if((userDTOOptional=diceGameServicesMYSQL.update(name, id)).isEmpty()) {
+            if((userDTOOptional= diceGameServices.update(name, id)).isEmpty()) {
                     throw new PlayerNotFoundException();
             }
         }
@@ -33,32 +54,32 @@ public final class ServiceToController implements ServicesInterface {
         return userDTOOptional;
     }
     public Optional<Game> newGame(int id) {
-        return diceGameServicesMYSQL.newGame(id);
+        return diceGameServices.newGame(id);
     }
     public Optional<List<GameDTO>> getPlayerGames(int id) {
-        return diceGameServicesMYSQL.getPlayerGames(id);
+        return diceGameServices.getPlayerGames(id);
     }
-    public Optional<List<PlayerRankingDTO>> getAllPlayers() {
-        return diceGameServicesMYSQL.getAllPlayers();
+    public List<PlayerRankingDTO> retrieveAllPlayers() {
+        return diceGameServices.retrieveAllPlayers();
     }
 
     public Optional<PlayerDTO> delete (int id) {
-        return diceGameServicesMYSQL.delete(id);
+        return diceGameServices.delete(id);
     }
 
     public Optional<List<PlayerRankingDTO>> playersRanking() {
-        return diceGameServicesMYSQL.playersRanking();
+        return diceGameServices.playersRanking();
     }
 
     public OptionalDouble averageSuccess() {
-        return diceGameServicesMYSQL.averageSuccess();
+        return diceGameServices.averageSuccess();
     }
 
     public Optional<PlayerRankingDTO> bestPlayer() {
-        return diceGameServicesMYSQL.bestPlayer();
+        return diceGameServices.bestPlayer();
     }
     public Optional<PlayerRankingDTO> worstPlayer() {
-        return diceGameServicesMYSQL.worstPlayer();
+        return diceGameServices.worstPlayer();
     }
 
 }

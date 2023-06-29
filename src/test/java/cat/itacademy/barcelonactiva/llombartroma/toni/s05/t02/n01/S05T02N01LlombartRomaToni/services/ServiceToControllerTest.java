@@ -1,29 +1,99 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.*;
+import org.mockito.Mockito;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 class ServiceToControllerTest {
     private ServiceToController serviceToController;
-    private DiceGameServicesMYSQL diceGameServicesMock;
+    private DiceGameServices diceGameServicesMock;
 
     @BeforeEach
     void setUp() {
-        diceGameServicesMock = mock(DiceGameServicesMYSQL.class);
+        diceGameServicesMock = mock(DiceGameServices.class);
         serviceToController = new ServiceToController(diceGameServicesMock);
     }
 
     @Test
-    void updateSuccessTest() {
+    void testRegister() {
+        // Arrange
+        User user = new User(); // Create a sample user object
+
+        AuthenticationResponse expectedResponse = new AuthenticationResponse();
+        // Set the expected response properties based on your implementation
+
+        DiceGameServices diceGameServicesMock = Mockito.mock(DiceGameServices.class);
+        try {
+            Mockito.when(diceGameServicesMock.register(user)).thenReturn(expectedResponse);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        ServiceToController serviceToController = new ServiceToController(diceGameServicesMock);
+
+        // Act
+        AuthenticationResponse result = serviceToController.register(user);
+
+        // Assert
+        Assertions.assertEquals(expectedResponse, result);
+
+        try {
+            Mockito.verify(diceGameServicesMock).register(user);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Mockito.verifyNoMoreInteractions(diceGameServicesMock);
+    }
+
+
+    @Test
+    void testAuthenticate() {
+        // Arrange
+        User user = new User(); // Create a sample user object
+
+        AuthenticationResponse expectedResponse = new AuthenticationResponse();
+        // Set the expected response properties based on your implementation
+
+        DiceGameServices diceGameServicesMock = Mockito.mock(DiceGameServices.class);
+        try {
+            Mockito.when(diceGameServicesMock.authenticate(user)).thenReturn(expectedResponse);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        ServiceToController serviceToController = new ServiceToController(diceGameServicesMock);
+
+        // Act
+        AuthenticationResponse result = serviceToController.authenticate(user);
+
+        // Assert
+        Assertions.assertEquals(expectedResponse, result);
+
+        try {
+            Mockito.verify(diceGameServicesMock).authenticate(user);
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Mockito.verifyNoMoreInteractions(diceGameServicesMock);
+    }
+
+    @Test
+    void testUpdateSuccess() {
         // Arrange
         int playerId = 1;
         String newName = "New Name";
@@ -37,14 +107,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(updatedPlayerDTO, result.get());
+        Assertions.assertEquals(updatedPlayerDTO, result.get());
 
         verify(diceGameServicesMock).update(newName, playerId);
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void newGameSuccessTest() {
+    void testNewGameSuccess() {
         // Arrange
         int playerId = 1;
         Game newGame = new Game(); // Create a sample new game
@@ -57,14 +127,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(newGame, result.get());
+        Assertions.assertEquals(newGame, result.get());
 
         verify(diceGameServicesMock).newGame(playerId);
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void getPlayerGamesSuccessTest() {
+    void testGetPlayerGamesSuccess() {
         // Arrange
         int playerId = 1;
         List<GameDTO> playerGames = new ArrayList<>(); // Create a sample list of player games
@@ -77,33 +147,33 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(playerGames, result.get());
+        Assertions.assertEquals(playerGames, result.get());
 
         verify(diceGameServicesMock).getPlayerGames(playerId);
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void getAllPlayersTest() {
+    void testGetAllPlayers() {
         // Arrange
         List<PlayerRankingDTO> allPlayers = new ArrayList<>(); // Create a sample list of all players
+        allPlayers.add(new PlayerRankingDTO());
 
-        when(diceGameServicesMock.getAllPlayers())
-                .thenReturn(Optional.of(allPlayers));
+        when(diceGameServicesMock.retrieveAllPlayers()).thenReturn(allPlayers);
 
         // Act
-        Optional<List<PlayerRankingDTO>> result = serviceToController.getAllPlayers();
+        List<PlayerRankingDTO> result = serviceToController.retrieveAllPlayers();
 
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals(allPlayers, result.get());
+        assertFalse(result.isEmpty());
+        Assertions.assertEquals(allPlayers, result);
 
-        verify(diceGameServicesMock).getAllPlayers();
+        verify(diceGameServicesMock).retrieveAllPlayers();
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void deleteSuccessTest() {
+    void testDeleteSuccess() {
         // Arrange
         int playerId = 1;
         PlayerDTO deletedPlayer = new PlayerDTO(); // Create a sample deleted player
@@ -116,14 +186,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(deletedPlayer, result.get());
+        Assertions.assertEquals(deletedPlayer, result.get());
 
         verify(diceGameServicesMock).delete(playerId);
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void playersRankingTest() {
+    void testPlayersRanking() {
         // Arrange
         List<PlayerRankingDTO> playerRanking = new ArrayList<>(); // Create a sample player ranking
 
@@ -135,14 +205,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(playerRanking, result.get());
+        Assertions.assertEquals(playerRanking, result.get());
 
         verify(diceGameServicesMock).playersRanking();
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void averageSuccessTest() {
+    void testAverageSuccess() {
         // Arrange
         OptionalDouble averageSuccessRate = OptionalDouble.of(0.75); // Create a sample average success rate
 
@@ -154,14 +224,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(averageSuccessRate.getAsDouble(), result.getAsDouble(),0.001);
+        Assertions.assertEquals(averageSuccessRate.getAsDouble(), result.getAsDouble(), 0.001);
 
         verify(diceGameServicesMock).averageSuccess();
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void bestPlayerTest() {
+    void testBestPlayer() {
         // Arrange
         List<PlayerRankingDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
         PlayerRankingDTO bestPlayer = new PlayerRankingDTO(); // Create a sample best player
@@ -179,14 +249,14 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(bestPlayer, result.get());
+        Assertions.assertEquals(bestPlayer, result.get());
 
         verify(diceGameServicesMock).bestPlayer();
         verifyNoMoreInteractions(diceGameServicesMock);
     }
 
     @Test
-    void worstPlayerTest() {
+    void testWorstPlayer() {
         // Arrange
         List<PlayerRankingDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
         PlayerRankingDTO worstPlayer = new PlayerRankingDTO(); // Create a sample worst player
@@ -204,7 +274,7 @@ class ServiceToControllerTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(worstPlayer, result.get());
+        Assertions.assertEquals(worstPlayer, result.get());
 
         verify(diceGameServicesMock).worstPlayer();
         verifyNoMoreInteractions(diceGameServicesMock);
