@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
-
-public class PlayerDTO implements Comparable{
+/* This class sets how players are retrieved and showed to the user. Gets rid of id, email and password */
+public final class PlayerDTO implements Comparable{
 
     @Getter
     @Setter

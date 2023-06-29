@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+/* This interface defines the necessary methods in business logic */
 public interface ServicesInterface {
     Optional<PlayerDTO> update(String name, int id);
     Optional<Game> newGame(int id);

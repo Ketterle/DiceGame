@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+/* This class acts as an extra layer between service and controller. Very useful when we have more than one service which persists in different DB */
 @Service
-public class ServiceToController implements ServicesInterface {
+public final class ServiceToController implements ServicesInterface {
     private final DiceGameServicesMYSQL diceGameServicesMYSQL;
 
     public ServiceToController(DiceGameServicesMYSQL diceGameServicesMYSQL) {

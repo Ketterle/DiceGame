@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+/* This is the controller layer */
 @RestController
-public class DiceGameController {
+public final class DiceGameController {
     final ServiceToController serviceToController;
 
     public DiceGameController(ServiceToController serviceToController) {
@@ -87,6 +88,7 @@ public class DiceGameController {
         return optionalWorstPlayer.map(playerRankingDTO -> new ResponseEntity<>(playerRankingDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
+    /* This inner class contains all endpoints as a constant Strings */
     public static class EndpointConstantsOperation {
         public static final String UPDATE_PLAYER = "/dicegame/player/{id}/update";
         public static final String ADD_GAME = "/dicegame/player/{id}/newgame";

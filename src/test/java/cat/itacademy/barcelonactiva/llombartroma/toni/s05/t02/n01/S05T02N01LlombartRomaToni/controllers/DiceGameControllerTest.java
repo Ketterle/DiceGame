@@ -70,7 +70,6 @@ public class DiceGameControllerTest {
         // Mocking the service response
         Game game = new Game();
         game.setId(1);
-        game.setGameStatus(GameStatus.WIN);
         Optional<Game> optionalGame = Optional.of(game);
         when(serviceToController.newGame(1)).thenReturn(optionalGame);
 

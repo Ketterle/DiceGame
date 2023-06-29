@@ -17,14 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+
+/* This class manages everything related to authentication and authorization */
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-
     private final UserRepositoryMySQL userRepositoryMySQL;
     private final UserRepositoryMongo userRepositoryMongo;
-
-
     @Bean
     public UserDetailsService userDetailsService () {
         return username -> {

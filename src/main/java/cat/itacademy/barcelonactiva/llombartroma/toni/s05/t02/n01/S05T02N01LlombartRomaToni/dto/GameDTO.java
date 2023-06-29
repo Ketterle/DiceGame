@@ -4,8 +4,8 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-public class GameDTO {
+ /* This class sets how games are retrieved and showed to the user. Gets rid of id */
+public final class GameDTO {
 
     @Getter
     @Setter

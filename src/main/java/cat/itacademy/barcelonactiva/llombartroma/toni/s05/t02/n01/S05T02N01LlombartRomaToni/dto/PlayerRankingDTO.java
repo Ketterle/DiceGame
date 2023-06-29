@@ -3,7 +3,8 @@ package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llom
 import lombok.Getter;
 import lombok.Setter;
 
-public class PlayerRankingDTO implements Comparable{
+/* This class sets how players are retrieved and showed to the user. Gets rid of id, email, password and even games */
+public final class PlayerRankingDTO implements Comparable{
 
     @Getter
     @Setter

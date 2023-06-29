@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/* This class is an entity that is used when registering a new player or admin */
 @Data
 @Builder
 @AllArgsConstructor

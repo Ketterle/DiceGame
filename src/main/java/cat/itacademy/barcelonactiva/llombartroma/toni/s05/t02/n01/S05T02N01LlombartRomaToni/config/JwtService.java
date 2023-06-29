@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/* This class generates and processes the token needed by jwt */
 @Service
 public class JwtService {
     public static final String SECRET_KEY="ufNPC510jS7TpiRXScTyqC+dPCD124uj5MkwIdXfsPkFuU7gN2icrfKws3VnirIT";

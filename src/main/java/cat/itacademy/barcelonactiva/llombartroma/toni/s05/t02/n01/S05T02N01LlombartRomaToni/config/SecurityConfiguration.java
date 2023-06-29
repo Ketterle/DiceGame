@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/* This class sets which endpoints are public and which not. Besides, sets the role access parameters */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -19,7 +20,6 @@ public class SecurityConfiguration {
 
     private final JwtFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -42,6 +42,4 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
 }
