@@ -57,7 +57,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testRegister() throws PlayerNotFoundException {
+    public void registerTest() throws PlayerNotFoundException {
         // Mock the UserRepositoryMySQL behavior
         when(userRepositoryMySQL.getUsersByName(anyString())).thenReturn(Optional.empty());
         when(userRepositoryMySQL.findByEmail(anyString())).thenReturn(Optional.empty());
@@ -89,7 +89,7 @@ public class DiceGameServicesTest {
         Assertions.assertEquals("mockedToken", response.getToken());
     }
     @Test
-    public void testAuthenticate() throws PlayerNotFoundException {
+    public void authenticateTest() throws PlayerNotFoundException {
         // Mock the UserRepositoryMySQL behavior
         when(userRepositoryMySQL.findByEmail(anyString())).thenReturn(Optional.of(mock(User.class)));
 
@@ -125,7 +125,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void updateTest() {
         // Create a test user
         User user = User.builder()
                 .name("Toni")
@@ -153,7 +153,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testAddGame() {
+    public void addGameTest() {
         // Create a test game object
         Game game = new Game();
         game.setId(0);
@@ -190,7 +190,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testGetPlayerGames() {
+    public void getPlayerGamesTest() {
         // Arrange
         int playerId = 1;
         User player = new User();
@@ -213,7 +213,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void tesRetrieveAllPlayers() {
+    public void retrieveAllPlayersTest() {
         // Mock the behavior of the repository method
         List<Game> games = List.of(new Game(), new Game());
         when(gameRepositoryMySQL.findAll()).thenReturn(games);
@@ -226,7 +226,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testDeleteUser() {
+    public void deleteUserTest() {
         // Create a test user
         User user = User.builder()
                 .id(1)
@@ -248,7 +248,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testPlayersRanking() {
+    public void playersRankingTest() {
 
         // Create test users
         User user1 = new User(1,"Toni","a","tllombart@gmail.com","belloc",Role.PLAYER);
@@ -272,7 +272,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void testAverageSuccess() {
+    public void averageSuccessTest() {
         // Create test users
         User user1 = new User(1,"Toni","a","tllombart@gmail.com","belloc",Role.PLAYER);
         User user2 = new User(2,"Laura","a","percolini@gmail.com","belloc",Role.PLAYER);
@@ -294,7 +294,7 @@ public class DiceGameServicesTest {
 
     }
     @Test
-    void testBestPlayer() {
+    void bestPlayerTest() {
         // Create test player ranking DTOs
         PlayerRankingDTO player1 = new PlayerRankingDTO();
         player1.setName("John");
@@ -319,7 +319,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    void testWorstPlayer() {
+    void worstPlayerTest() {
         // Create test player ranking DTOs
         PlayerRankingDTO player1 = new PlayerRankingDTO();
         player1.setName("John");

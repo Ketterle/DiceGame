@@ -43,13 +43,13 @@ public final class DiceGameServices implements ServicesInterface {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
-    /* This method allows to register users, both Admin and Players
+    /* This method allows to register users, both Admin and Players.
     * We do not allow duplicated names nor emails and sets the default player name to ANONYMOUS.
     * Only one ADMIN is allowed.
     *  */
     public AuthenticationResponse register(User user) throws PlayerNotFoundException {
         boolean isNameExists = userRepositoryMySQL.getUsersByName(user.getName())
-                .map(users -> users.stream().anyMatch(u -> !u.getName().equals(User.DEFAULT_NAME)))
+                .map(users -> users.stream().anyMatch(u -> !u.getName().equals(User.DEFAULT_PLAYER)))
                 .orElse(false);
 
         boolean isEmailExists = userRepositoryMySQL.findByEmail(user.getEmail()).isPresent()
@@ -74,7 +74,7 @@ public final class DiceGameServices implements ServicesInterface {
                     .build();
         } else {
             var player = User.builder()
-                    .name(user.getName() == null ? User.DEFAULT_NAME : user.getName())
+                    .name(user.getName() == null ? User.DEFAULT_PLAYER : user.getName())
                     .email(user.getEmail())
                     .password(passwordEncoder.encode(user.getPassword()))
                     .role(user.getRole())

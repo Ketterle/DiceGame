@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +19,13 @@ import java.util.function.Function;
 /* This class generates and processes the token needed by jwt */
 @Service
 public class JwtService {
-    public static final String SECRET_KEY="ufNPC510jS7TpiRXScTyqC+dPCD124uj5MkwIdXfsPkFuU7gN2icrfKws3VnirIT";
 
+    private final String SECRET_KEY;
+
+    public JwtService(Environment environment) {
+        /* Secret Key is set as environment variable */
+        SECRET_KEY = environment.getProperty("SECRET_KEY");
+    }
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }

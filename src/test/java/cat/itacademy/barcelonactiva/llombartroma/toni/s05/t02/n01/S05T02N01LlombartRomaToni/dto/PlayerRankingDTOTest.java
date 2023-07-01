@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerRankingDTOTest {
     @Test
-    public void testCompareTo() {
+    public void compareToTest() {
         PlayerRankingDTO player1 = new PlayerRankingDTO();
         player1.setName("Player 1");
         player1.setSuccessRate(80.0);

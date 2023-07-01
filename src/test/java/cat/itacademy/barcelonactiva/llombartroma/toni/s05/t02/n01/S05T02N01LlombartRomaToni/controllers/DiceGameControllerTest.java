@@ -210,7 +210,7 @@ public class DiceGameControllerTest {
     }
 
     @Test
-    public void worstPlayer() {
+    public void worstPlayerTest() {
         // Mocking the service response
         PlayerRankingDTO worstPlayer = new PlayerRankingDTO();
         worstPlayer.setName("John");

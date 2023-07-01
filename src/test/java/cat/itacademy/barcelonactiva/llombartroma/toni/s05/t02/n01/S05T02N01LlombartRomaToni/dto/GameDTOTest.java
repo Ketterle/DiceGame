@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GameDTOTest {
 
     @Test
-    public void testGameDTO() {
+    public void gameDTOTest() {
         int dice1 = 3;
         int dice2 = 4;
         int gameOutput = dice1 + dice2;

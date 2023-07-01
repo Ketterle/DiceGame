@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 public class PlayerDTOTest {
 
     @Test
-    public void testCuccessRatePlayerCalculator() {
+    public void successRatePlayerCalculatorTest() {
         Game game1 = Mockito.mock(Game.class);
         Game game2 = Mockito.mock(Game.class);
         Game game3 = Mockito.mock(Game.class);
@@ -35,7 +35,7 @@ public class PlayerDTOTest {
     }
 
     @Test
-    public void testCompareTo() {
+    public void compareToTest() {
         PlayerDTO player1 = new PlayerDTO();
         player1.setName("Player 1");
         player1.setSuccessRate(80.0);

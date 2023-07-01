@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class User implements UserDetails {
-    public static final String DEFAULT_NAME = "ANONYMOUS";
+    public static final String DEFAULT_PLAYER = "ANONYMOUS";
     public static final String DEFAULT_ADMIN = "ADMIN";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
