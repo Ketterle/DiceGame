@@ -6,8 +6,8 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithGamesDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithoutGamesDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services.ServiceToController;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,15 +73,15 @@ public class DiceGameControllerTest {
         // Arrange
         String name = "John";
         int id = 1;
-        PlayerDTO playerDTO = new PlayerDTO();
-        when(serviceToController.update(name, id)).thenReturn(Optional.of(playerDTO));
+        PlayerWithGamesDTO playerWithGamesDTO = new PlayerWithGamesDTO();
+        when(serviceToController.update(name, id)).thenReturn(Optional.of(playerWithGamesDTO));
 
         // Act
-        ResponseEntity<PlayerDTO> response = diceGameController.updatePlayer(name, id);
+        ResponseEntity<PlayerWithGamesDTO> response = diceGameController.updatePlayer(name, id);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(playerDTO, response.getBody());
+        assertEquals(playerWithGamesDTO, response.getBody());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class DiceGameControllerTest {
         when(serviceToController.update(name, id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<PlayerDTO> response = diceGameController.updatePlayer(name, id);
+        ResponseEntity<PlayerWithGamesDTO> response = diceGameController.updatePlayer(name, id);
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -134,11 +134,11 @@ public class DiceGameControllerTest {
     @Test
     public void getAllPlayersTest() {
         // Mocking the service response
-        List<PlayerRankingDTO> playerDTOList = new ArrayList<>();
+        List<PlayerWithoutGamesDTO> playerDTOList = new ArrayList<>();
         when(serviceToController.retrieveAllPlayers()).thenReturn(playerDTOList);
 
         // Testing the controller method
-        ResponseEntity<List<PlayerRankingDTO>> response = diceGameController.getAllPlayers();
+        ResponseEntity<List<PlayerWithoutGamesDTO>> response = diceGameController.getAllPlayers();
 
         // Assertion
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -149,31 +149,31 @@ public class DiceGameControllerTest {
     public void deletePlayerTest() {
         // Mocking the service response
         int id = 1;
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setName("John");
-        when(serviceToController.delete(id)).thenReturn(Optional.of(playerDTO));
+        PlayerWithGamesDTO playerWithGamesDTO = new PlayerWithGamesDTO();
+        playerWithGamesDTO.setName("John");
+        when(serviceToController.delete(id)).thenReturn(Optional.of(playerWithGamesDTO));
 
         // Testing the controller method
-        ResponseEntity<PlayerDTO> response = diceGameController.delete(id);
+        ResponseEntity<PlayerWithGamesDTO> response = diceGameController.delete(id);
 
         // Assertion
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(playerDTO.getName(),response.getBody().getName());
+        assertEquals(playerWithGamesDTO.getName(),response.getBody().getName());
         verify(serviceToController, times(1)).delete(id);
     }
 
     @Test
     public void playersRankingTest() {
         // Mocking the service response
-        List<PlayerRankingDTO> players = Arrays.asList(
-                new PlayerRankingDTO(),
-                new PlayerRankingDTO(),
-                new PlayerRankingDTO()
+        List<PlayerWithoutGamesDTO> players = Arrays.asList(
+                new PlayerWithoutGamesDTO(),
+                new PlayerWithoutGamesDTO(),
+                new PlayerWithoutGamesDTO()
         );
         when(serviceToController.playersRanking()).thenReturn(Optional.of(players));
 
         // Testing the controller method
-        ResponseEntity<List<PlayerRankingDTO>> response = diceGameController.getPlayersRanking();
+        ResponseEntity<List<PlayerWithoutGamesDTO>> response = diceGameController.getPlayersRanking();
 
         // Assertion
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -197,12 +197,12 @@ public class DiceGameControllerTest {
     @Test
     public void bestPlayerTest() {
         // Mocking the service response
-        PlayerRankingDTO bestPlayer = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO bestPlayer = new PlayerWithoutGamesDTO();
         bestPlayer.setName("John");
         when(serviceToController.bestPlayer()).thenReturn(Optional.of(bestPlayer));
 
         // Testing the controller method
-        ResponseEntity<PlayerRankingDTO> response = diceGameController.getBestPlayer();
+        ResponseEntity<PlayerWithoutGamesDTO> response = diceGameController.getBestPlayer();
 
         // Assertion
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -212,12 +212,12 @@ public class DiceGameControllerTest {
     @Test
     public void worstPlayerTest() {
         // Mocking the service response
-        PlayerRankingDTO worstPlayer = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO worstPlayer = new PlayerWithoutGamesDTO();
         worstPlayer.setName("John");
         when(serviceToController.worstPlayer()).thenReturn(Optional.of(worstPlayer));
 
         // Testing the controller method
-        ResponseEntity<PlayerRankingDTO> response = diceGameController.getWorstPlayer();
+        ResponseEntity<PlayerWithoutGamesDTO> response = diceGameController.getWorstPlayer();
 
         // Assertion
         assertEquals(HttpStatus.OK, response.getStatusCode());

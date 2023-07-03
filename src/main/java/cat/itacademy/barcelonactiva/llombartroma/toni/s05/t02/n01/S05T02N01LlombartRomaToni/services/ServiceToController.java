@@ -1,12 +1,13 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.PlayerAlreadyExistsException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithGamesDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithoutGamesDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,8 @@ public final class ServiceToController implements ServicesInterface {
     public AuthenticationResponse register (User user) {
         try {
             return diceGameServices.register(user);
-        } catch (PlayerNotFoundException e) {
+        } catch (PlayerAlreadyExistsException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -36,12 +38,13 @@ public final class ServiceToController implements ServicesInterface {
         try {
            return diceGameServices.authenticate(user);
         } catch (PlayerNotFoundException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public Optional<PlayerDTO> update(String name, int id) {
-        Optional<PlayerDTO> userDTOOptional;
+    public Optional<PlayerWithGamesDTO> update(String name, int id) {
+        Optional<PlayerWithGamesDTO> userDTOOptional;
         try {
             if((userDTOOptional= diceGameServices.update(name, id)).isEmpty()) {
                     throw new PlayerNotFoundException();
@@ -59,15 +62,15 @@ public final class ServiceToController implements ServicesInterface {
     public Optional<List<GameDTO>> getPlayerGames(int id) {
         return diceGameServices.getPlayerGames(id);
     }
-    public List<PlayerRankingDTO> retrieveAllPlayers() {
+    public List<PlayerWithoutGamesDTO> retrieveAllPlayers() {
         return diceGameServices.retrieveAllPlayers();
     }
 
-    public Optional<PlayerDTO> delete (int id) {
+    public Optional<PlayerWithGamesDTO> delete (int id) {
         return diceGameServices.delete(id);
     }
 
-    public Optional<List<PlayerRankingDTO>> playersRanking() {
+    public Optional<List<PlayerWithoutGamesDTO>> playersRanking() {
         return diceGameServices.playersRanking();
     }
 
@@ -75,10 +78,10 @@ public final class ServiceToController implements ServicesInterface {
         return diceGameServices.averageSuccess();
     }
 
-    public Optional<PlayerRankingDTO> bestPlayer() {
+    public Optional<PlayerWithoutGamesDTO> bestPlayer() {
         return diceGameServices.bestPlayer();
     }
-    public Optional<PlayerRankingDTO> worstPlayer() {
+    public Optional<PlayerWithoutGamesDTO> worstPlayer() {
         return diceGameServices.worstPlayer();
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class PlayerDTOTest {
+public class PlayerWithGamesDTOTest {
 
     @Test
     public void successRatePlayerCalculatorTest() {
@@ -22,8 +22,8 @@ public class PlayerDTOTest {
         games.add(game2);
         games.add(game3);
 
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setGames(games);
+        PlayerWithGamesDTO playerWithGamesDTO = new PlayerWithGamesDTO();
+        playerWithGamesDTO.setGames(games);
 
         when(game1.getGameStatus()).thenReturn(GameStatus.WIN);
         when(game2.getGameStatus()).thenReturn(GameStatus.LOSE);
@@ -31,24 +31,24 @@ public class PlayerDTOTest {
 
         double expectedSuccessRate = (2.0 / 3.0) * 100;
 
-        assertEquals(expectedSuccessRate, playerDTO.successRatePlayerCalculator());
+        assertEquals(expectedSuccessRate, playerWithGamesDTO.successRatePlayerCalculator());
     }
 
     @Test
     public void compareToTest() {
-        PlayerDTO player1 = new PlayerDTO();
+        PlayerWithGamesDTO player1 = new PlayerWithGamesDTO();
         player1.setName("Player 1");
         player1.setSuccessRate(80.0);
 
-        PlayerDTO player2 = new PlayerDTO();
+        PlayerWithGamesDTO player2 = new PlayerWithGamesDTO();
         player2.setName("Player 2");
         player2.setSuccessRate(70.0);
 
-        PlayerDTO player3 = new PlayerDTO();
+        PlayerWithGamesDTO player3 = new PlayerWithGamesDTO();
         player3.setName("Player 3");
         player3.setSuccessRate(80.0);
 
-        PlayerDTO player4 = new PlayerDTO();
+        PlayerWithGamesDTO player4 = new PlayerWithGamesDTO();
         player4.setName("Player 3");
         player4.setSuccessRate(80.0);
 

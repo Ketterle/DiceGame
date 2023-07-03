@@ -1,6 +1,7 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.PlayerAlreadyExistsException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.config.JwtService;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
@@ -8,8 +9,8 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Role;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithGamesDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithoutGamesDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.GameRepositoryMySQL;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMongo;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.repositories.UserRepositoryMySQL;
@@ -57,7 +58,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    public void registerTest() throws PlayerNotFoundException {
+    public void registerTest() throws PlayerAlreadyExistsException {
         // Mock the UserRepositoryMySQL behavior
         when(userRepositoryMySQL.getUsersByName(anyString())).thenReturn(Optional.empty());
         when(userRepositoryMySQL.findByEmail(anyString())).thenReturn(Optional.empty());
@@ -141,7 +142,7 @@ public class DiceGameServicesTest {
         when(gameRepositoryMySQL.findGamesByPlayer(any(User.class))).thenReturn(new ArrayList<>());
 
         // Call the update method
-        PlayerDTO updatedUser = diceGameServices.update("Hola",1).get();
+        PlayerWithGamesDTO updatedUser = diceGameServices.update("Hola",1).get();
 
         // Verify the UserRepositoryMySQL method calls
         verify(userRepositoryMySQL).findById(1);
@@ -253,17 +254,17 @@ public class DiceGameServicesTest {
         // Create test users
         User user1 = new User(1,"Toni","a","tllombart@gmail.com","belloc",Role.PLAYER);
         User user2 = new User(2,"Laura","a","percolini@gmail.com","belloc",Role.PLAYER);
-        PlayerRankingDTO playerRankingDTO1 = new PlayerRankingDTO();
-        PlayerRankingDTO playerRankingDTO2 = new PlayerRankingDTO();
-        playerRankingDTO1.setSuccessRate(1);
-        playerRankingDTO2.setSuccessRate(0.5);
+        PlayerWithoutGamesDTO playerWithoutGamesDTO1 = new PlayerWithoutGamesDTO();
+        PlayerWithoutGamesDTO playerWithoutGamesDTO2 = new PlayerWithoutGamesDTO();
+        playerWithoutGamesDTO1.setSuccessRate(1);
+        playerWithoutGamesDTO2.setSuccessRate(0.5);
 
         // Mock the behavior
         when(userRepositoryMySQL.findAll()).thenReturn(List.of(user1,user2));
         when(gameRepositoryMySQL.findGamesByPlayer(any(User.class))).thenReturn(List.of(new Game()));
 
         // Call the playersRanking method
-        Optional<List<PlayerRankingDTO>> players = diceGameServices.playersRanking();
+        Optional<List<PlayerWithoutGamesDTO>> players = diceGameServices.playersRanking();
 
         //Assert
         Assertions.assertEquals("Toni", players.get().get(1).getName());
@@ -296,22 +297,22 @@ public class DiceGameServicesTest {
     @Test
     void bestPlayerTest() {
         // Create test player ranking DTOs
-        PlayerRankingDTO player1 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player1 = new PlayerWithoutGamesDTO();
         player1.setName("John");
         player1.setSuccessRate(0.8);
 
-        PlayerRankingDTO player2 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player2 = new PlayerWithoutGamesDTO();
         player2.setName("Alice");
         player2.setSuccessRate(0.9);
 
-        List<PlayerRankingDTO> playerRankingDTOs = List.of(player1, player2);
+        List<PlayerWithoutGamesDTO> playerWithoutGamesDTOS = List.of(player1, player2);
 
         // Mock the behavior of retrieveAllPlayers() method
         DiceGameServices mockedServices = Mockito.spy(diceGameServices);
-        Mockito.doReturn(playerRankingDTOs).when(mockedServices).retrieveAllPlayers();
+        Mockito.doReturn(playerWithoutGamesDTOS).when(mockedServices).retrieveAllPlayers();
 
         // Call the bestPlayer method
-        Optional<PlayerRankingDTO> bestPlayer = mockedServices.bestPlayer();
+        Optional<PlayerWithoutGamesDTO> bestPlayer = mockedServices.bestPlayer();
 
         // Assert the result
         Assertions.assertTrue(bestPlayer.isPresent());
@@ -321,22 +322,22 @@ public class DiceGameServicesTest {
     @Test
     void worstPlayerTest() {
         // Create test player ranking DTOs
-        PlayerRankingDTO player1 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player1 = new PlayerWithoutGamesDTO();
         player1.setName("John");
         player1.setSuccessRate(0.8);
 
-        PlayerRankingDTO player2 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player2 = new PlayerWithoutGamesDTO();
         player2.setName("Alice");
         player2.setSuccessRate(0.9);
 
-        List<PlayerRankingDTO> playerRankingDTOs = List.of(player1, player2);
+        List<PlayerWithoutGamesDTO> playerWithoutGamesDTOS = List.of(player1, player2);
 
         // Mock the behavior of retrieveAllPlayers() method
         DiceGameServices mockedServices = Mockito.spy(diceGameServices);
-        Mockito.doReturn(playerRankingDTOs).when(mockedServices).retrieveAllPlayers();
+        Mockito.doReturn(playerWithoutGamesDTOS).when(mockedServices).retrieveAllPlayers();
 
         // Call the bestPlayer method
-        Optional<PlayerRankingDTO> worstPlayer = mockedServices.worstPlayer();
+        Optional<PlayerWithoutGamesDTO> worstPlayer = mockedServices.worstPlayer();
 
         // Assert the result
         Assertions.assertTrue(worstPlayer.isPresent());
@@ -344,7 +345,7 @@ public class DiceGameServicesTest {
     }
 
     @Test
-    void testFromUserToPlayerDTO() {
+    void testFromUserToPlayerWithGamesDTO() {
         // Create a mock user and games
         User user = new User();
         user.setId(1);
@@ -367,18 +368,18 @@ public class DiceGameServicesTest {
         Mockito.when(gameRepositoryMock.findGamesByPlayer(user)).thenReturn(games);
 
         // Call the private fromUserToPlayerDTO method using reflection
-        PlayerDTO playerDTO = diceGameServices.fromUserToPlayerDTO(user);
-        playerDTO.setGames(games);
+        PlayerWithGamesDTO playerWithGamesDTO = diceGameServices.fromUserToPlayerWithGamesDTO(user);
+        playerWithGamesDTO.setGames(games);
 
         // Assert the result
-        Assertions.assertEquals("John", playerDTO.getName());
-        Assertions.assertEquals(2, playerDTO.getGames().size());
-        Assertions.assertEquals(0.0, playerDTO.getSuccessRate()); // Update with the expected success rate
+        Assertions.assertEquals("John", playerWithGamesDTO.getName());
+        Assertions.assertEquals(2, playerWithGamesDTO.getGames().size());
+        Assertions.assertEquals(0.0, playerWithGamesDTO.getSuccessRate()); // Update with the expected success rate
     }
 
 
     @Test
-    void testFromUserToPlayerRankingDTO() {
+    void testFromUserToPlayerWithoutGamesDTO() {
         // Create a mock user and games
         User user = new User();
         user.setId(1);
@@ -401,11 +402,11 @@ public class DiceGameServicesTest {
         Mockito.when(gameRepositoryMock.findGamesByPlayer(user)).thenReturn(games);
 
         // Call the fromUserToPlayerRankingDTO method
-        PlayerRankingDTO playerRankingDTO = diceGameServices.fromUserToPlayerRankingDTO(user);
-        playerRankingDTO.setSuccessRate(0.5);
+        PlayerWithoutGamesDTO playerWithoutGamesDTO = diceGameServices.fromUserToPlayerWithoutGamesDTO(user);
+        playerWithoutGamesDTO.setSuccessRate(0.5);
 
         // Assert the result
-        Assertions.assertEquals("John", playerRankingDTO.getName());
-        Assertions.assertEquals(0.5, playerRankingDTO.getSuccessRate()); // Update with the expected success rate
+        Assertions.assertEquals("John", playerWithoutGamesDTO.getName());
+        Assertions.assertEquals(0.5, playerWithoutGamesDTO.getSuccessRate()); // Update with the expected success rate
     }
 }

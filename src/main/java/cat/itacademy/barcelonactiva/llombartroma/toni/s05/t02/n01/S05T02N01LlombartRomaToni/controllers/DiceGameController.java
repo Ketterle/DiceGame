@@ -4,8 +4,8 @@ import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01Llomb
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithGamesDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithoutGamesDTO;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services.ServiceToController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +35,9 @@ public final class DiceGameController {
     }
 
     @PutMapping(value = EndpointConstantsOperation.UPDATE_PLAYER)
-    public ResponseEntity<PlayerDTO> updatePlayer(@RequestParam String name, @PathVariable int id) {
+    public ResponseEntity<PlayerWithGamesDTO> updatePlayer(@RequestParam String name, @PathVariable int id) {
         try {
-            Optional<PlayerDTO> updatedPlayerOptional = serviceToController.update(name, id);
+            Optional<PlayerWithGamesDTO> updatedPlayerOptional = serviceToController.update(name, id);
             if (updatedPlayerOptional.isPresent()) {
                 return new ResponseEntity<>(updatedPlayerOptional.get(), HttpStatus.OK);
             } else {
@@ -61,20 +61,20 @@ public final class DiceGameController {
     }
 
     @GetMapping(EndpointConstantsOperation.GET_ALL_PLAYERS)
-    public ResponseEntity<List<PlayerRankingDTO>> getAllPlayers() {
-        List<PlayerRankingDTO> players = serviceToController.retrieveAllPlayers();
+    public ResponseEntity<List<PlayerWithoutGamesDTO>> getAllPlayers() {
+        List<PlayerWithoutGamesDTO> players = serviceToController.retrieveAllPlayers();
         return Optional.of(players).map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @DeleteMapping(EndpointConstantsOperation.DELETE_PLAYER)
-    public ResponseEntity<PlayerDTO> delete(@PathVariable int id) {
-        Optional<PlayerDTO> optionalPlayer = serviceToController.delete(id);
+    public ResponseEntity<PlayerWithGamesDTO> delete(@PathVariable int id) {
+        Optional<PlayerWithGamesDTO> optionalPlayer = serviceToController.delete(id);
         return optionalPlayer.map(playerDTO -> new ResponseEntity<>(playerDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping(EndpointConstantsOperation.GET_PLAYERS_RANKING)
-    public ResponseEntity<List<PlayerRankingDTO>> getPlayersRanking() {
-        Optional<List<PlayerRankingDTO>> optionalPlayers = serviceToController.playersRanking();
+    public ResponseEntity<List<PlayerWithoutGamesDTO>> getPlayersRanking() {
+        Optional<List<PlayerWithoutGamesDTO>> optionalPlayers = serviceToController.playersRanking();
         return optionalPlayers.map(playerRankingDTOS -> new ResponseEntity<>(playerRankingDTOS, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
@@ -89,19 +89,19 @@ public final class DiceGameController {
         }
     }
     @GetMapping(EndpointConstantsOperation.GET_BEST_PLAYER)
-    public ResponseEntity<PlayerRankingDTO> getBestPlayer() {
-        Optional<PlayerRankingDTO> optionalBestPlayer = serviceToController.bestPlayer();
+    public ResponseEntity<PlayerWithoutGamesDTO> getBestPlayer() {
+        Optional<PlayerWithoutGamesDTO> optionalBestPlayer = serviceToController.bestPlayer();
         return optionalBestPlayer.map(playerRankingDTO -> new ResponseEntity<>(playerRankingDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping(EndpointConstantsOperation.GET_WORST_PLAYER)
-    public ResponseEntity<PlayerRankingDTO> getWorstPlayer() {
-        Optional<PlayerRankingDTO> optionalWorstPlayer = serviceToController.worstPlayer();
+    public ResponseEntity<PlayerWithoutGamesDTO> getWorstPlayer() {
+        Optional<PlayerWithoutGamesDTO> optionalWorstPlayer = serviceToController.worstPlayer();
         return optionalWorstPlayer.map(playerRankingDTO -> new ResponseEntity<>(playerRankingDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     /* This inner class contains all endpoints as a constant Strings */
-    public static class EndpointConstantsOperation {
+    private static class EndpointConstantsOperation {
         public static final String REGISTER_PLAYER = "/dicegame/player/auth/register";
         public static final String AUTHENTICATE_PLAYER = "/dicegame/player/auth/authenticate";
 

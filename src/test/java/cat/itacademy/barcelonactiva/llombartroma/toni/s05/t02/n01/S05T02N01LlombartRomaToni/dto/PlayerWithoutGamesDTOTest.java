@@ -4,22 +4,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlayerRankingDTOTest {
+public class PlayerWithoutGamesDTOTest {
     @Test
     public void compareToTest() {
-        PlayerRankingDTO player1 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player1 = new PlayerWithoutGamesDTO();
         player1.setName("Player 1");
         player1.setSuccessRate(80.0);
 
-        PlayerRankingDTO player2 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player2 = new PlayerWithoutGamesDTO();
         player2.setName("Player 2");
         player2.setSuccessRate(70.0);
 
-        PlayerRankingDTO player3 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player3 = new PlayerWithoutGamesDTO();
         player3.setName("Player 3");
         player3.setSuccessRate(80.0);
 
-        PlayerRankingDTO player4 = new PlayerRankingDTO();
+        PlayerWithoutGamesDTO player4 = new PlayerWithoutGamesDTO();
         player4.setName("Player 3");
         player4.setSuccessRate(80.0);
 

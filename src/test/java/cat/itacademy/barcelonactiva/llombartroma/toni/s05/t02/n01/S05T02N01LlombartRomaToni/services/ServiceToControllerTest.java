@@ -1,12 +1,13 @@
 package cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.services;
 
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.AuthenticationResponse;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.auth.PlayerAlreadyExistsException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.controllers.PlayerNotFoundException;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.Game;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.domain.User;
 import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.GameDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerDTO;
-import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerRankingDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithGamesDTO;
+import cat.itacademy.barcelonactiva.llombartroma.toni.s05.t02.n01.S05T02N01LlombartRomaToni.dto.PlayerWithoutGamesDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ class ServiceToControllerTest {
         DiceGameServices diceGameServicesMock = Mockito.mock(DiceGameServices.class);
         try {
             Mockito.when(diceGameServicesMock.register(user)).thenReturn(expectedResponse);
-        } catch (PlayerNotFoundException e) {
+        } catch (PlayerAlreadyExistsException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
@@ -54,7 +56,8 @@ class ServiceToControllerTest {
 
         try {
             Mockito.verify(diceGameServicesMock).register(user);
-        } catch (PlayerNotFoundException e) {
+        } catch (PlayerAlreadyExistsException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         Mockito.verifyNoMoreInteractions(diceGameServicesMock);
@@ -97,17 +100,17 @@ class ServiceToControllerTest {
         // Arrange
         int playerId = 1;
         String newName = "New Name";
-        PlayerDTO updatedPlayerDTO = new PlayerDTO(); // Create a sample updated player DTO
+        PlayerWithGamesDTO updatedPlayerWithGamesDTO = new PlayerWithGamesDTO(); // Create a sample updated player DTO
 
         when(diceGameServicesMock.update(newName, playerId))
-                .thenReturn(Optional.of(updatedPlayerDTO));
+                .thenReturn(Optional.of(updatedPlayerWithGamesDTO));
 
         // Act
-        Optional<PlayerDTO> result = serviceToController.update(newName, playerId);
+        Optional<PlayerWithGamesDTO> result = serviceToController.update(newName, playerId);
 
         // Assert
         assertTrue(result.isPresent());
-        Assertions.assertEquals(updatedPlayerDTO, result.get());
+        Assertions.assertEquals(updatedPlayerWithGamesDTO, result.get());
 
         verify(diceGameServicesMock).update(newName, playerId);
         verifyNoMoreInteractions(diceGameServicesMock);
@@ -156,13 +159,13 @@ class ServiceToControllerTest {
     @Test
     void testGetAllPlayers() {
         // Arrange
-        List<PlayerRankingDTO> allPlayers = new ArrayList<>(); // Create a sample list of all players
-        allPlayers.add(new PlayerRankingDTO());
+        List<PlayerWithoutGamesDTO> allPlayers = new ArrayList<>(); // Create a sample list of all players
+        allPlayers.add(new PlayerWithoutGamesDTO());
 
         when(diceGameServicesMock.retrieveAllPlayers()).thenReturn(allPlayers);
 
         // Act
-        List<PlayerRankingDTO> result = serviceToController.retrieveAllPlayers();
+        List<PlayerWithoutGamesDTO> result = serviceToController.retrieveAllPlayers();
 
         // Assert
         assertFalse(result.isEmpty());
@@ -176,13 +179,13 @@ class ServiceToControllerTest {
     void testDeleteSuccess() {
         // Arrange
         int playerId = 1;
-        PlayerDTO deletedPlayer = new PlayerDTO(); // Create a sample deleted player
+        PlayerWithGamesDTO deletedPlayer = new PlayerWithGamesDTO(); // Create a sample deleted player
 
         when(diceGameServicesMock.delete(playerId))
                 .thenReturn(Optional.of(deletedPlayer));
 
         // Act
-        Optional<PlayerDTO> result = serviceToController.delete(playerId);
+        Optional<PlayerWithGamesDTO> result = serviceToController.delete(playerId);
 
         // Assert
         assertTrue(result.isPresent());
@@ -195,13 +198,13 @@ class ServiceToControllerTest {
     @Test
     void testPlayersRanking() {
         // Arrange
-        List<PlayerRankingDTO> playerRanking = new ArrayList<>(); // Create a sample player ranking
+        List<PlayerWithoutGamesDTO> playerRanking = new ArrayList<>(); // Create a sample player ranking
 
         when(diceGameServicesMock.playersRanking())
                 .thenReturn(Optional.of(playerRanking));
 
         // Act
-        Optional<List<PlayerRankingDTO>> result = serviceToController.playersRanking();
+        Optional<List<PlayerWithoutGamesDTO>> result = serviceToController.playersRanking();
 
         // Assert
         assertTrue(result.isPresent());
@@ -233,19 +236,19 @@ class ServiceToControllerTest {
     @Test
     void testBestPlayer() {
         // Arrange
-        List<PlayerRankingDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
-        PlayerRankingDTO bestPlayer = new PlayerRankingDTO(); // Create a sample best player
+        List<PlayerWithoutGamesDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
+        PlayerWithoutGamesDTO bestPlayer = new PlayerWithoutGamesDTO(); // Create a sample best player
 
-        playersRanking.add(new PlayerRankingDTO()); // Add some players to the ranking list
-        playersRanking.add(new PlayerRankingDTO());
+        playersRanking.add(new PlayerWithoutGamesDTO()); // Add some players to the ranking list
+        playersRanking.add(new PlayerWithoutGamesDTO());
         playersRanking.add(bestPlayer);
-        playersRanking.add(new PlayerRankingDTO());
+        playersRanking.add(new PlayerWithoutGamesDTO());
 
         when(diceGameServicesMock.bestPlayer())
                 .thenReturn(Optional.of(bestPlayer));
 
         // Act
-        Optional<PlayerRankingDTO> result = serviceToController.bestPlayer();
+        Optional<PlayerWithoutGamesDTO> result = serviceToController.bestPlayer();
 
         // Assert
         assertTrue(result.isPresent());
@@ -258,19 +261,19 @@ class ServiceToControllerTest {
     @Test
     void testWorstPlayer() {
         // Arrange
-        List<PlayerRankingDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
-        PlayerRankingDTO worstPlayer = new PlayerRankingDTO(); // Create a sample worst player
+        List<PlayerWithoutGamesDTO> playersRanking = new ArrayList<>(); // Create a sample player ranking
+        PlayerWithoutGamesDTO worstPlayer = new PlayerWithoutGamesDTO(); // Create a sample worst player
 
-        playersRanking.add(new PlayerRankingDTO()); // Add some players to the ranking list
+        playersRanking.add(new PlayerWithoutGamesDTO()); // Add some players to the ranking list
         playersRanking.add(worstPlayer);
-        playersRanking.add(new PlayerRankingDTO());
-        playersRanking.add(new PlayerRankingDTO());
+        playersRanking.add(new PlayerWithoutGamesDTO());
+        playersRanking.add(new PlayerWithoutGamesDTO());
 
         when(diceGameServicesMock.worstPlayer())
                 .thenReturn(Optional.of(worstPlayer));
 
         // Act
-        Optional<PlayerRankingDTO> result = serviceToController.worstPlayer();
+        Optional<PlayerWithoutGamesDTO> result = serviceToController.worstPlayer();
 
         // Assert
         assertTrue(result.isPresent());

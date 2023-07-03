@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /* This class sets how players are retrieved and showed to the user. Gets rid of id, email, password and even games */
-public final class PlayerRankingDTO implements Comparable{
+public final class PlayerWithoutGamesDTO implements Comparable{
 
     @Getter
     @Setter
@@ -17,8 +17,8 @@ public final class PlayerRankingDTO implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        PlayerRankingDTO playerRankingDTOToBeCompared = (PlayerRankingDTO) o;
-        double comparingValue = this.getSuccessRate()- playerRankingDTOToBeCompared.getSuccessRate();
+        PlayerWithoutGamesDTO playerWithoutGamesDTOToBeCompared = (PlayerWithoutGamesDTO) o;
+        double comparingValue = this.getSuccessRate()- playerWithoutGamesDTOToBeCompared.getSuccessRate();
         if(comparingValue>0) {
             return -1;
         }
@@ -26,7 +26,7 @@ public final class PlayerRankingDTO implements Comparable{
             return 1;
         }
         else {
-            return this.getName().compareTo(playerRankingDTOToBeCompared.getName());
+            return this.getName().compareTo(playerWithoutGamesDTOToBeCompared.getName());
         }
     }
 }
