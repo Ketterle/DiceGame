@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.List;
 
 /* This class sets how players are retrieved and showed to the user. Gets rid of id, email and password */
-public final class PlayerWithGamesDTO implements Comparable{
+public final class PlayerWithGamesDTO implements Comparable {
 
     @Getter
     @Setter

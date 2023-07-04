@@ -40,7 +40,6 @@ public final class DiceGameServices implements ServicesInterface {
         this.gameRepositoryMySQL = gameRepositoryMySQL;
         this.userRepositoryMongo = userRepositoryMongo;
         this.passwordEncoder = passwordEncoder;
-
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
@@ -61,31 +60,9 @@ public final class DiceGameServices implements ServicesInterface {
         }
 
         if (user.getRole() == Role.ADMIN) {
-            var admin = User.builder()
-                    .name(User.DEFAULT_ADMIN)
-                    .email(user.getEmail())
-                    .password(passwordEncoder.encode(user.getPassword()))
-                    .role(user.getRole())
-                    .dateOfRegistration(LocalDateTime.now().toString())
-                    .build();
-            userRepositoryMongo.save(admin);
-            var jwtToken = jwtService.generateToken(admin);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+            return this.registerAdmin(user);
         } else {
-            var player = User.builder()
-                    .name(user.getName() == null ? User.DEFAULT_PLAYER : user.getName())
-                    .email(user.getEmail())
-                    .password(passwordEncoder.encode(user.getPassword()))
-                    .role(user.getRole())
-                    .dateOfRegistration(LocalDateTime.now().toString())
-                    .build();
-            userRepositoryMySQL.save(player);
-            var jwtToken = jwtService.generateToken(player);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+            return registerPlayer(user);
         }
     }
 
@@ -244,5 +221,37 @@ public final class DiceGameServices implements ServicesInterface {
         averageScore=averageScore/games.size();
         playerWithoutGamesDTO.setSuccessRate(averageScore);
         return playerWithoutGamesDTO;
+    }
+    /* Generates an admin and puts it to the DB */
+    private AuthenticationResponse registerAdmin (User user) {
+        var admin = User.builder()
+                .name(User.DEFAULT_ADMIN)
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(user.getRole())
+                .dateOfRegistration(LocalDateTime.now().toString())
+                .build();
+        userRepositoryMongo.save(admin);
+        return tokenGenerator(admin);
+    }
+    /* Generates a player and puts it to the DB */
+
+    private AuthenticationResponse registerPlayer (User user) {
+        var player = User.builder()
+                .name(user.getName() == null ? User.DEFAULT_PLAYER : user.getName())
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(user.getRole())
+                .dateOfRegistration(LocalDateTime.now().toString())
+                .build();
+        userRepositoryMySQL.save(player);
+        return tokenGenerator(player);
+    }
+    /* Returns the proper token when new player/user registered */
+    private AuthenticationResponse tokenGenerator (User user) {
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 }

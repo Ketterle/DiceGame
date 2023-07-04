@@ -29,18 +29,13 @@ public class DiceGameControllerTest {
     @InjectMocks
     private DiceGameController diceGameController;
 
-    @Before
-    public void setup() {
-        // Initialize mocks or stub any necessary behavior
-    }
-
     @Test
     public void registerTest() {
         // Arrange
         User user = new User(); // Create a sample user object
         AuthenticationResponse expectedResponse = new AuthenticationResponse();
-        // Set the expected response properties based on your implementation
 
+        // Set the expected response properties based on the implementation
         when(serviceToController.register(user)).thenReturn(expectedResponse);
 
         // Act
@@ -56,8 +51,8 @@ public class DiceGameControllerTest {
         // Arrange
         User user = new User(); // Create a sample user object
         AuthenticationResponse expectedResponse = new AuthenticationResponse();
-        // Set the expected response properties based on your implementation
 
+        // Set the expected response properties based on the implementation
         when(serviceToController.authenticate(user)).thenReturn(expectedResponse);
 
         // Act
@@ -74,6 +69,8 @@ public class DiceGameControllerTest {
         String name = "John";
         int id = 1;
         PlayerWithGamesDTO playerWithGamesDTO = new PlayerWithGamesDTO();
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.update(name, id)).thenReturn(Optional.of(playerWithGamesDTO));
 
         // Act
@@ -89,6 +86,8 @@ public class DiceGameControllerTest {
         // Arrange
         String name = "John";
         int id = 1;
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.update(name, id)).thenReturn(Optional.empty());
 
         // Act
@@ -105,6 +104,8 @@ public class DiceGameControllerTest {
         Game game = new Game();
         game.setId(1);
         Optional<Game> optionalGame = Optional.of(game);
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.newGame(1)).thenReturn(optionalGame);
 
         // Testing the controller method
@@ -121,6 +122,8 @@ public class DiceGameControllerTest {
         List<GameDTO> gameDTOList = new ArrayList<>();
         // Add some game DTOs to the list
         Optional<List<GameDTO>> optionalGameDTOList = Optional.of(gameDTOList);
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.getPlayerGames(1)).thenReturn(optionalGameDTOList);
 
         // Testing the controller method
@@ -135,6 +138,8 @@ public class DiceGameControllerTest {
     public void getAllPlayersTest() {
         // Mocking the service response
         List<PlayerWithoutGamesDTO> playerDTOList = new ArrayList<>();
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.retrieveAllPlayers()).thenReturn(playerDTOList);
 
         // Testing the controller method
@@ -151,6 +156,8 @@ public class DiceGameControllerTest {
         int id = 1;
         PlayerWithGamesDTO playerWithGamesDTO = new PlayerWithGamesDTO();
         playerWithGamesDTO.setName("John");
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.delete(id)).thenReturn(Optional.of(playerWithGamesDTO));
 
         // Testing the controller method
@@ -170,6 +177,8 @@ public class DiceGameControllerTest {
                 new PlayerWithoutGamesDTO(),
                 new PlayerWithoutGamesDTO()
         );
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.playersRanking()).thenReturn(Optional.of(players));
 
         // Testing the controller method
@@ -184,6 +193,8 @@ public class DiceGameControllerTest {
     public void averageSuccessTest() {
         // Mocking the service response
         double average = 85.5;
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.averageSuccess()).thenReturn(OptionalDouble.of(average));
 
         // Testing the controller method
@@ -199,6 +210,8 @@ public class DiceGameControllerTest {
         // Mocking the service response
         PlayerWithoutGamesDTO bestPlayer = new PlayerWithoutGamesDTO();
         bestPlayer.setName("John");
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.bestPlayer()).thenReturn(Optional.of(bestPlayer));
 
         // Testing the controller method
@@ -214,6 +227,8 @@ public class DiceGameControllerTest {
         // Mocking the service response
         PlayerWithoutGamesDTO worstPlayer = new PlayerWithoutGamesDTO();
         worstPlayer.setName("John");
+
+        // Set the expected response properties based on the implementation
         when(serviceToController.worstPlayer()).thenReturn(Optional.of(worstPlayer));
 
         // Testing the controller method
